@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="前言文档编辑使用markdown语言，语法格式学习网站https:&#x2F;&#x2F;m.runoob.com&#x2F;markdown  安装及使用安装hexo 是基于nodejs开发的网站框架，需要先安装node.js注意：windows cmd下敲命令可能会提示没权限，此时可以使用管理员身份运行cmd即可 nodejs①node官网：https:&#x2F;&#x2F;link.zhihu.com&#x2F;target&#x3D;https%3A&#x2F;&#x2F;n">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo的安装和使用">
+<meta property="og:url" content="http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="前言文档编辑使用markdown语言，语法格式学习网站https:&#x2F;&#x2F;m.runoob.com&#x2F;markdown  安装及使用安装hexo 是基于nodejs开发的网站框架，需要先安装node.js注意：windows cmd下敲命令可能会提示没权限，此时可以使用管理员身份运行cmd即可 nodejs①node官网：https:&#x2F;&#x2F;link.zhihu.com&#x2F;target&#x3D;https%3A&#x2F;&#x2F;n">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-04-07T09:03:38.000Z">
+<meta property="article:modified_time" content="2023-04-09T19:42:49.533Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>hexo的安装和使用</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/04/07/hello-world/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&text=hexo的安装和使用"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&title=hexo的安装和使用"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&is_video=false&description=hexo的安装和使用"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=hexo的安装和使用&body=Check out this article: http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&title=hexo的安装和使用"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&title=hexo的安装和使用"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&title=hexo的安装和使用"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&title=hexo的安装和使用"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&name=hexo的安装和使用&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&t=hexo的安装和使用"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8"><span class="toc-number">2.</span> <span class="toc-text">安装及使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">3.</span> <span class="toc-text">安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#nodejs"><span class="toc-number">3.0.1.</span> <span class="toc-text">nodejs</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#cnpm%E5%AE%89%E8%A3%85"><span class="toc-number">3.0.2.</span> <span class="toc-text">cnpm安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#git%E5%AE%89%E8%A3%85"><span class="toc-number">3.0.3.</span> <span class="toc-text">git安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%A8%E5%B1%80%E5%AE%89%E8%A3%85%E8%84%9A%E6%89%8B%E6%9E%B6hexo-cli"><span class="toc-number">3.0.4.</span> <span class="toc-text">全局安装脚手架hexo-cli</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A9%E7%94%A8hexo%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="toc-number">3.0.5.</span> <span class="toc-text">利用hexo创建项目</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="toc-number">3.0.6.</span> <span class="toc-text">安装依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E9%A1%B9%E7%9B%AE"><span class="toc-number">3.0.7.</span> <span class="toc-text">启动项目</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8"><span class="toc-number">4.</span> <span class="toc-text">使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E9%80%81%E8%87%B3github"><span class="toc-number">5.</span> <span class="toc-text">推送至github</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85git%E6%8F%92%E4%BB%B6"><span class="toc-number">5.0.1.</span> <span class="toc-text">安装git插件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9-config-yml%E6%96%87%E4%BB%B6"><span class="toc-number">5.0.2.</span> <span class="toc-text">修改 _config.yml文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E5%88%B0remote"><span class="toc-number">5.0.3.</span> <span class="toc-text">部署到remote</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%98"><span class="toc-number">5.0.4.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-number">5.0.5.</span> <span class="toc-text">解决方法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BB%E9%A2%98"><span class="toc-number">6.</span> <span class="toc-text">修改主题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E7%9A%84%E8%AE%BF%E9%97%AE%E5%9C%B0%E5%9D%80%EF%BC%9A"><span class="toc-number">7.</span> <span class="toc-text">我的访问地址：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">8.</span> <span class="toc-text">参考</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        hexo的安装和使用
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-04-07T09:03:38.000Z" itemprop="datePublished">2023-04-07</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>文档编辑使用markdown语言，语法格式学习网站<br><a target="_blank" rel="noopener" href="https://m.runoob.com/markdown">https://m.runoob.com/markdown</a></p>
+<hr>
+<h2 id="安装及使用"><a href="#安装及使用" class="headerlink" title="安装及使用"></a>安装及使用</h2><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>hexo 是基于nodejs开发的网站框架，需要先安装node.js<br>注意：windows cmd下敲命令可能会提示没权限，此时可以使用管理员身份运行cmd即可</p>
+<h4 id="nodejs"><a href="#nodejs" class="headerlink" title="nodejs"></a>nodejs</h4><p>①node官网：<br><a href="https://link.zhihu.com/target=https%3A//nodejs.org/en/">https://link.zhihu.com/target=https%3A//nodejs.org/en/</a></p>
+<p>②node中文网：<br><a target="_blank" rel="noopener" href="http://nodejs.cn/">http://nodejs.cn/</a></p>
+<h4 id="cnpm安装"><a href="#cnpm安装" class="headerlink" title="cnpm安装"></a>cnpm安装</h4><p>npm install -g cnpm –registry=<a target="_blank" rel="noopener" href="https://registry.npm.taobao.org/">https://registry.npm.taobao.org</a></p>
+<h4 id="git安装"><a href="#git安装" class="headerlink" title="git安装"></a>git安装</h4><p>git官网：<br><a target="_blank" rel="noopener" href="https://git-scm.com/downloads/">https://git-scm.com/downloads/</a></p>
+<h4 id="全局安装脚手架hexo-cli"><a href="#全局安装脚手架hexo-cli" class="headerlink" title="全局安装脚手架hexo-cli"></a>全局安装脚手架hexo-cli</h4><p>npm install -g hexo-cli</p>
+<h4 id="利用hexo创建项目"><a href="#利用hexo创建项目" class="headerlink" title="利用hexo创建项目"></a>利用hexo创建项目</h4><p>hexo init myhexo</p>
+<h4 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h4><p>进入到myhexo目录下 </p>
+<p>npm install 或者 yarn (如果提示没权限可使用cnpm试试)</p>
+<h4 id="启动项目"><a href="#启动项目" class="headerlink" title="启动项目"></a>启动项目</h4><p>hexo s (或 hexo server)</p>
+<hr>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>新建一篇博客<br>hexo n “第一篇博客”</p>
+<p>会在myhexo目录下生成”/source/_posts/第一篇博客.md”<br>使用或者文档编辑器打开，编辑博客内容后保存<br>退回到myhexo目录<br>*</p>
+<p>执行清理<br>hexo clean </p>
+<p>执行生成<br>hexo g</p>
+<p>执行启动<br>hexo s</p>
+<hr>
+<h2 id="推送至github"><a href="#推送至github" class="headerlink" title="推送至github"></a>推送至github</h2><p>在github创建一个仓库，注意仓库名[必须与github的用户名一致 后面加上.github.io]即为后续访问博客的地址</p>
+<h4 id="安装git插件"><a href="#安装git插件" class="headerlink" title="安装git插件"></a>安装git插件</h4><p>cnpm install –save hexo-deployer-git</p>
+<h4 id="修改-config-yml文件"><a href="#修改-config-yml文件" class="headerlink" title="修改 _config.yml文件"></a>修改 _config.yml文件</h4><p> Deployment<br> deploy:<br> type: git<br>   repo: <a target="_blank" rel="noopener" href="https://github.com/xxxx/xxxx.git">https://github.com/xxxx/xxxx.git</a><br>   branch: master<br>*</p>
+<h4 id="部署到remote"><a href="#部署到remote" class="headerlink" title="部署到remote"></a>部署到remote</h4><p>hexo d (hexo deploy)</p>
+<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4><p>执行hexo d时可能会出现以下错误</p>
+<p>fatal: detected dubious ownership in repository at ‘D:/javaa/projects/myhexo/.deploy_git’<br>‘D:/javaa/projects/myhexo/.deploy_git’ is owned by:<br>        ‘S-1-5-32-544’<br>but the current user is:<br>        ‘S-1-5-21-2495913028-826248603-125958094-1001’<br>To add an exception for this directory, call:</p>
+<pre><code>    git config --global --add safe.directory D:/javaa/projects/myhexo/.deploy_git
+</code></pre>
+<p>FATAL {<br>  err: Error: Spawn failed<br>      at ChildProcess.<anonymous> (D:\javaa\projects\myhexo\node_modules.store\<a href="mailto:&#104;&#x65;&#x78;&#111;&#x2d;&#117;&#x74;&#x69;&#108;&#64;&#x32;&#x2e;&#x37;&#x2e;&#x30;">&#104;&#x65;&#x78;&#111;&#x2d;&#117;&#x74;&#x69;&#108;&#64;&#x32;&#x2e;&#x37;&#x2e;&#x30;</a>\node_modules\hexo-util\lib\spawn.js:51:21)<br>      at ChildProcess.emit (node:events:513:28)<br>      at cp.emit (D:\javaa\projects\myhexo\node_modules.store\<a href="mailto:&#99;&#114;&#111;&#115;&#115;&#x2d;&#x73;&#x70;&#x61;&#x77;&#x6e;&#64;&#x37;&#46;&#48;&#46;&#51;">&#99;&#114;&#111;&#115;&#115;&#x2d;&#x73;&#x70;&#x61;&#x77;&#x6e;&#64;&#x37;&#46;&#48;&#46;&#51;</a>\node_modules\cross-spawn\lib\enoent.js:34:29)<br>      at ChildProcess._handle.onexit (node:internal/child_process:291:12) {<br>    code: 128<br>  }<br>} Something’s wrong. Maybe you can find the solution here: %s <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">https://hexo.io/docs/troubleshooting.html</a><br>*</p>
+<h4 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h4><ol>
+<li>进入站点根目录 及myhexo目录下 </li>
+</ol>
+<p>cd D:\javaa\projects\myhexo&gt;</p>
+<ol start="2">
+<li><p>删除git提交内容文件夹<br>rm -rf .deploy_git/</p>
+</li>
+<li><p>执行<br>git config –global core.autocrlf false</p>
+</li>
+<li><p>最后<br>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</p>
+</li>
+</ol>
+<hr>
+<h2 id="修改主题"><a href="#修改主题" class="headerlink" title="修改主题"></a>修改主题</h2><ul>
+<li>克隆想要使用的主题至themes/文件夹下<br>git clone <a target="_blank" rel="noopener" href="https://github.com/litten/hexo-theme-yilia.git">https://github.com/litten/hexo-theme-yilia.git</a> themes/yilia</li>
+<li>修改 _config.yml文件,将文件中theme 改为自己想要用的主题<br>theme: cactus<!-- theme: yilia --></li>
+</ul>
+<p> hexo clean<br> hexo g<br> hexo s<br> hexo d </p>
+<h2 id="我的访问地址："><a href="#我的访问地址：" class="headerlink" title="我的访问地址："></a>我的访问地址：</h2><p><a target="_blank" rel="noopener" href="https://liushan1129.github.io/">https://liushan1129.github.io/</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>文章：<a target="_blank" rel="noopener" href="https://www.zhihu.com/tardis/bd/ans/2648068218">https://www.zhihu.com/tardis/bd/ans/2648068218</a><br>视频：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Yb411a7ty/?spm_id_from=333.337.search-card.all.click&amp;vd_source=8e550995af3796bcf1eefe40f6971e33">https://www.bilibili.com/video/BV1Yb411a7ty/?spm_id_from=333.337.search-card.all.click&amp;vd_source=8e550995af3796bcf1eefe40f6971e33</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8"><span class="toc-number">2.</span> <span class="toc-text">安装及使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">3.</span> <span class="toc-text">安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#nodejs"><span class="toc-number">3.0.1.</span> <span class="toc-text">nodejs</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#cnpm%E5%AE%89%E8%A3%85"><span class="toc-number">3.0.2.</span> <span class="toc-text">cnpm安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#git%E5%AE%89%E8%A3%85"><span class="toc-number">3.0.3.</span> <span class="toc-text">git安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%A8%E5%B1%80%E5%AE%89%E8%A3%85%E8%84%9A%E6%89%8B%E6%9E%B6hexo-cli"><span class="toc-number">3.0.4.</span> <span class="toc-text">全局安装脚手架hexo-cli</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A9%E7%94%A8hexo%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="toc-number">3.0.5.</span> <span class="toc-text">利用hexo创建项目</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="toc-number">3.0.6.</span> <span class="toc-text">安装依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E9%A1%B9%E7%9B%AE"><span class="toc-number">3.0.7.</span> <span class="toc-text">启动项目</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8"><span class="toc-number">4.</span> <span class="toc-text">使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E9%80%81%E8%87%B3github"><span class="toc-number">5.</span> <span class="toc-text">推送至github</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85git%E6%8F%92%E4%BB%B6"><span class="toc-number">5.0.1.</span> <span class="toc-text">安装git插件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9-config-yml%E6%96%87%E4%BB%B6"><span class="toc-number">5.0.2.</span> <span class="toc-text">修改 _config.yml文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E5%88%B0remote"><span class="toc-number">5.0.3.</span> <span class="toc-text">部署到remote</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%98"><span class="toc-number">5.0.4.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-number">5.0.5.</span> <span class="toc-text">解决方法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BB%E9%A2%98"><span class="toc-number">6.</span> <span class="toc-text">修改主题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E7%9A%84%E8%AE%BF%E9%97%AE%E5%9C%B0%E5%9D%80%EF%BC%9A"><span class="toc-number">7.</span> <span class="toc-text">我的访问地址：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">8.</span> <span class="toc-text">参考</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&text=hexo的安装和使用"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&title=hexo的安装和使用"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&is_video=false&description=hexo的安装和使用"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=hexo的安装和使用&body=Check out this article: http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&title=hexo的安装和使用"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&title=hexo的安装和使用"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&title=hexo的安装和使用"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&title=hexo的安装和使用"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&name=hexo的安装和使用&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/&t=hexo的安装和使用"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

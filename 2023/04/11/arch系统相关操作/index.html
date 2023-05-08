@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="ARCH链接wifi 查看可用设备  ip link   将wifi和密码设置到配置文件wpa_passphrase PDCN rdxq18019601ls  &gt; internet.conf   开启设备ip link set wlp9s0 up  后台运行wpa_supplicant -c internet.conf -i 设备名称 &amp; 设备连接互联网 &amp;表示后台运行  动">
+<meta property="og:type" content="article">
+<meta property="og:title" content="arch系统相关操作">
+<meta property="og:url" content="http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="ARCH链接wifi 查看可用设备  ip link   将wifi和密码设置到配置文件wpa_passphrase PDCN rdxq18019601ls  &gt; internet.conf   开启设备ip link set wlp9s0 up  后台运行wpa_supplicant -c internet.conf -i 设备名称 &amp; 设备连接互联网 &amp;表示后台运行  动">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-04-11T08:00:38.000Z">
+<meta property="article:modified_time" content="2023-04-11T08:07:02.338Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>arch系统相关操作</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/04/11/JUC-%E5%9F%BA%E7%A1%80/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/04/10/linux%E9%98%B2%E7%81%AB%E5%A2%99%E5%AE%89%E8%A3%85%E4%B8%8E%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&text=arch系统相关操作"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&title=arch系统相关操作"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&is_video=false&description=arch系统相关操作"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=arch系统相关操作&body=Check out this article: http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&title=arch系统相关操作"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&title=arch系统相关操作"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&title=arch系统相关操作"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&title=arch系统相关操作"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&name=arch系统相关操作&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&t=arch系统相关操作"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ARCH"><span class="toc-number">1.</span> <span class="toc-text">ARCH</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5wifi"><span class="toc-number">2.</span> <span class="toc-text">链接wifi</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0%E7%B3%BB%E7%BB%9F"><span class="toc-number">3.</span> <span class="toc-text">更新系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85man"><span class="toc-number">4.</span> <span class="toc-text">安装man:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-base-devel"><span class="toc-number">5.</span> <span class="toc-text">安装 base-devel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7"><span class="toc-number">6.</span> <span class="toc-text">添加用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%BE%91sudo%E6%96%87%E4%BB%B6"><span class="toc-number">7.</span> <span class="toc-text">编辑sudo文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85xorg"><span class="toc-number">8.</span> <span class="toc-text">安装xorg</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85deepin"><span class="toc-number">9.</span> <span class="toc-text">安装deepin</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%81%AB%E7%8B%90%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98"><span class="toc-number">10.</span> <span class="toc-text">火狐中文乱码问题</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        arch系统相关操作
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-04-11T08:00:38.000Z" itemprop="datePublished">2023-04-11</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="ARCH"><a href="#ARCH" class="headerlink" title="ARCH"></a>ARCH</h2><h2 id="链接wifi"><a href="#链接wifi" class="headerlink" title="链接wifi"></a>链接wifi</h2><ol>
+<li>查看可用设备</li>
+</ol>
+<p>ip link</p>
+<ol start="2">
+<li><p> 将wifi和密码设置到配置文件<br>wpa_passphrase PDCN rdxq18019601ls  &gt; internet.conf </p>
+</li>
+<li><p>开启设备<br>ip link set wlp9s0 up</p>
+</li>
+<li><p>后台运行<br>wpa_supplicant -c internet.conf -i 设备名称 &amp; 设备连接互联网 &amp;表示后台运行</p>
+</li>
+<li><p>动态分配ip地址<br>dhcpcd &amp; </p>
+</li>
+</ol>
+<p>ping baidu.com</p>
+<h2 id="更新系统"><a href="#更新系统" class="headerlink" title="更新系统"></a>更新系统</h2><p>pacman -Syyu</p>
+<h2 id="安装man"><a href="#安装man" class="headerlink" title="安装man:"></a>安装man:</h2><p>pacman -S man</p>
+<h2 id="安装-base-devel"><a href="#安装-base-devel" class="headerlink" title="安装 base-devel"></a>安装 base-devel</h2><p>pacman -S base-devel</p>
+<h2 id="添加用户"><a href="#添加用户" class="headerlink" title="添加用户"></a>添加用户</h2><p>man useradd / useradd -h 两种方式查看useradd用法</p>
+<p>useradd -m -G wheel liushan 新增用户 liushan 并将用户添加到wheel组中</p>
+<p>passwd liushan   设置用户密码 </p>
+<h2 id="编辑sudo文件"><a href="#编辑sudo文件" class="headerlink" title="编辑sudo文件"></a>编辑sudo文件</h2><p>sudo vi   使用的是vi命令,vi 命令上下左右间是ABC,最好用vim<br>sudo vim</p>
+<p>如果没有vi命令 使用 一下命令将编辑命令链接到vi<br>ln -s /usr/bin/vim /usr/bin/vi<br>将wheel 行解注释</p>
+<p>切换到liushan用户  su liushan 或者exit退出root 用liushan账号登录</p>
+<h2 id="安装xorg"><a href="#安装xorg" class="headerlink" title="安装xorg"></a>安装xorg</h2><p>sudo pacman -S xorg xorg-server</p>
+<h2 id="安装deepin"><a href="#安装deepin" class="headerlink" title="安装deepin"></a>安装deepin</h2><p>1)<br>sudo pacman -S deepin deepin-extra<br>pacman -Qs lightdm 查看是否已安装lightdm</p>
+<ol start="2">
+<li><p>编辑登录管理器配置文件<br>vi /etc/lightdm/lightdm.conf<br>修改greeter-session = lightdm-deepin-greeter</p>
+</li>
+<li><p>系统启动自动使用lightdm<br>sudo systemctl enable lightdm //开机自启动<br>or<br>sudo systemctl start lightdm</p>
+</li>
+</ol>
+<h2 id="火狐中文乱码问题"><a href="#火狐中文乱码问题" class="headerlink" title="火狐中文乱码问题"></a>火狐中文乱码问题</h2><p> sudo pacman -S wqy-microhei</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ARCH"><span class="toc-number">1.</span> <span class="toc-text">ARCH</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5wifi"><span class="toc-number">2.</span> <span class="toc-text">链接wifi</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0%E7%B3%BB%E7%BB%9F"><span class="toc-number">3.</span> <span class="toc-text">更新系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85man"><span class="toc-number">4.</span> <span class="toc-text">安装man:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-base-devel"><span class="toc-number">5.</span> <span class="toc-text">安装 base-devel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7"><span class="toc-number">6.</span> <span class="toc-text">添加用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%BE%91sudo%E6%96%87%E4%BB%B6"><span class="toc-number">7.</span> <span class="toc-text">编辑sudo文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85xorg"><span class="toc-number">8.</span> <span class="toc-text">安装xorg</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85deepin"><span class="toc-number">9.</span> <span class="toc-text">安装deepin</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%81%AB%E7%8B%90%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98"><span class="toc-number">10.</span> <span class="toc-text">火狐中文乱码问题</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&text=arch系统相关操作"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&title=arch系统相关操作"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&is_video=false&description=arch系统相关操作"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=arch系统相关操作&body=Check out this article: http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&title=arch系统相关操作"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&title=arch系统相关操作"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&title=arch系统相关操作"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&title=arch系统相关操作"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&name=arch系统相关操作&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/04/11/arch%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/&t=arch系统相关操作"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="前言本地使用git推送项目到github时，走https方式每次都需要输入账号和密码，如果采用SSH方式，可以不用输入，但需要配置ssh key。  配置ssh步骤：1.生成 rsa秘钥和公钥2.将公钥配置到github代码托管平台 具体步骤：1.查看是否存在.ssh文件夹 cd ~&#x2F;.ssh [windows： cd .&#x2F;.ssh] 如果存在id_rsa和id_rsa.pub这两个文件说明已经有">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git如何生成并设置SSHKey">
+<meta property="og:url" content="http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="前言本地使用git推送项目到github时，走https方式每次都需要输入账号和密码，如果采用SSH方式，可以不用输入，但需要配置ssh key。  配置ssh步骤：1.生成 rsa秘钥和公钥2.将公钥配置到github代码托管平台 具体步骤：1.查看是否存在.ssh文件夹 cd ~&#x2F;.ssh [windows： cd .&#x2F;.ssh] 如果存在id_rsa和id_rsa.pub这两个文件说明已经有">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-04-09T05:51:44.000Z">
+<meta property="article:modified_time" content="2023-04-09T19:21:59.748Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>git如何生成并设置SSHKey</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/04/09/MYSQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/04/07/hexo-%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&text=git如何生成并设置SSHKey"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&title=git如何生成并设置SSHKey"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&is_video=false&description=git如何生成并设置SSHKey"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=git如何生成并设置SSHKey&body=Check out this article: http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&title=git如何生成并设置SSHKey"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&title=git如何生成并设置SSHKey"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&title=git如何生成并设置SSHKey"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&title=git如何生成并设置SSHKey"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&name=git如何生成并设置SSHKey&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&t=git如何生成并设置SSHKey"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">2.</span> <span class="toc-text">参考</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        git如何生成并设置SSHKey
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-04-09T05:51:44.000Z" itemprop="datePublished">2023-04-09</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本地使用git推送项目到github时，走https方式每次都需要输入账号和密码，如果采用SSH方式，可以不用输入，但需要配置ssh key。</p>
+<hr>
+<p>配置ssh步骤：<br>1.生成 rsa秘钥和公钥<br>2.将公钥配置到github代码托管平台</p>
+<p>具体步骤：<br>1.查看是否存在.ssh文件夹</p>
+<p>cd ~/.ssh [windows： cd ./.ssh]</p>
+<p>如果存在id_rsa和id_rsa.pub这两个文件说明已经有ssh key，可直接跳到第三bu</p>
+<p>2.生成 ssh key<br>ssh-keygen -t rsa -C “<a href="mailto:&#120;&#120;&#120;&#x40;&#x78;&#x78;&#x78;&#x2e;&#x63;&#111;&#x6d;">&#120;&#120;&#120;&#x40;&#x78;&#x78;&#x78;&#x2e;&#x63;&#111;&#x6d;</a>“ </p>
+<p>邮箱是托管平台绑定的邮箱</p>
+<p>3.获取公钥<br>vi id_rsa.pub [windows： type id_rsa.pub]</p>
+<p>复制文本</p>
+<p>4.将第三部复制出的文本添加到代码托管平台<br>头像下拉菜单– settings – SSH and GPG keys [左侧栏] – New SSH key [右侧栏]</p>
+<p>5.查看是否设置成功<br>ssh -T <a href="mailto:&#x67;&#x69;&#116;&#x40;&#103;&#x69;&#116;&#104;&#117;&#x62;&#46;&#x63;&#111;&#109;">&#x67;&#x69;&#116;&#x40;&#103;&#x69;&#116;&#104;&#117;&#x62;&#46;&#x63;&#111;&#109;</a></p>
+<hr>
+<p>验证原理：<br>ssh登录安全性是由非对称加密保证，产生秘钥时，一次产生两个，一个公钥【id_rsa.pub】，一个私钥[id_rsa]</p>
+<p>验证方式：</p>
+<ul>
+<li>本地生成一个秘钥对，公钥放在托管平台，私钥放在本地</li>
+<li>本地主机[【A】登录远程主机【B】时，A向B发送一个登录请求，B收到消息后，随机生成一个字符串并用公钥加密，发回给A,A拿到字符串后用本地的私钥进行 解密，在发送给B,B对比解密后的字符串与源字符串是否相同，相同则认证成功</li>
+</ul>
+<hr>
+<p>值得注意的是 <strong>ssh key的配置是针对每台主机的！</strong>, 仅针对当前主机有效，其他主机想要实现无登录推代码，需要在自己主机重新配置</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42310154/article/details/118340458">https://blog.csdn.net/weixin_42310154/article/details/118340458</a> </p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">2.</span> <span class="toc-text">参考</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&text=git如何生成并设置SSHKey"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&title=git如何生成并设置SSHKey"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&is_video=false&description=git如何生成并设置SSHKey"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=git如何生成并设置SSHKey&body=Check out this article: http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&title=git如何生成并设置SSHKey"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&title=git如何生成并设置SSHKey"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&title=git如何生成并设置SSHKey"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&title=git如何生成并设置SSHKey"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&name=git如何生成并设置SSHKey&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/04/09/GIT%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E5%B9%B6%E8%AE%BE%E7%BD%AESSHKey/&t=git如何生成并设置SSHKey"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

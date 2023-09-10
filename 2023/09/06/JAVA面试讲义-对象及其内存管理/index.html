@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="开篇在写程序时，不可避免的需要创建实例，在创建时不要盲目的随意创建，要考虑对象创建的系统开销。我们不仅仅要停留在代码层次写程序，还要考虑每行代码对系统内存的影响！！！所以需要清楚 java对象的内存分配机制。 Jave内存管理分为两部分内容：内存分配：创建Java对象时JVM为该对象在堆内存中所分配的内存空间内存回收：Java对象失去引用，变成垃圾时，JVM的垃圾回收机制自动清理该对象，并回收该对">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA面试讲义-对象及其内存管理">
+<meta property="og:url" content="http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="开篇在写程序时，不可避免的需要创建实例，在创建时不要盲目的随意创建，要考虑对象创建的系统开销。我们不仅仅要停留在代码层次写程序，还要考虑每行代码对系统内存的影响！！！所以需要清楚 java对象的内存分配机制。 Jave内存管理分为两部分内容：内存分配：创建Java对象时JVM为该对象在堆内存中所分配的内存空间内存回收：Java对象失去引用，变成垃圾时，JVM的垃圾回收机制自动清理该对象，并回收该对">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/JavaImg/JavaToolTest%E7%BC%96%E8%AF%91-javap%E5%88%86%E6%9E%90%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/images/JavaImg/Wolf%E7%BC%96%E8%AF%91-javap%E5%88%86%E6%9E%90%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/images/JavaImg/final%E8%B5%8B%E5%80%BC-javap%E5%88%86%E6%9E%90%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/images/JavaImg/final_static%E8%B5%8B%E5%80%BC-javap%E5%88%86%E6%9E%90%E5%9B%BE.png">
+<meta property="article:published_time" content="2023-09-06T10:23:38.000Z">
+<meta property="article:modified_time" content="2023-09-10T11:33:36.886Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/JavaImg/JavaToolTest%E7%BC%96%E8%AF%91-javap%E5%88%86%E6%9E%90%E5%9B%BE.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>JAVA面试讲义-对象及其内存管理</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/09/07/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%85%B3%E9%94%AE%E5%AD%97%E6%95%B4%E7%90%86/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/09/06/win10-system-problems/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&text=JAVA面试讲义-对象及其内存管理"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&title=JAVA面试讲义-对象及其内存管理"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&is_video=false&description=JAVA面试讲义-对象及其内存管理"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JAVA面试讲义-对象及其内存管理&body=Check out this article: http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&title=JAVA面试讲义-对象及其内存管理"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&title=JAVA面试讲义-对象及其内存管理"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&title=JAVA面试讲义-对象及其内存管理"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&title=JAVA面试讲义-对象及其内存管理"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&name=JAVA面试讲义-对象及其内存管理&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&t=JAVA面试讲义-对象及其内存管理"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E7%AF%87"><span class="toc-number">1.</span> <span class="toc-text">开篇</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%E5%8F%98%E9%87%8F%E5%92%8C%E7%B1%BB%E5%8F%98%E9%87%8F"><span class="toc-number">2.</span> <span class="toc-text">实例变量和类变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7"><span class="toc-number">2.1.</span> <span class="toc-text">属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%97%B6%E6%9C%BA"><span class="toc-number">2.2.</span> <span class="toc-text">初始化时机</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%E5%8F%98%E9%87%8F%E5%88%9D%E5%A7%8B%E5%8C%96%E6%97%B6%E6%9C%BA"><span class="toc-number">2.2.1.</span> <span class="toc-text">实例变量初始化时机</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B1%BB%E5%8F%98%E9%87%8F%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E6%97%B6%E6%9C%BA"><span class="toc-number">2.2.2.</span> <span class="toc-text">类变量的初始化时机</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E5%AD%90%E7%B1%BB%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%AE%9E%E4%BE%8B%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.2.3.</span> <span class="toc-text">访问子类对象的实例对象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%B6%E3%80%81%E5%AD%90%E5%AE%9E%E4%BE%8B%E7%9A%84%E5%86%85%E5%AD%98%E6%8E%A7%E5%88%B6"><span class="toc-number">2.2.4.</span> <span class="toc-text">父、子实例的内存控制</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BB%A7%E6%89%BF%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F%E5%92%8C%E7%BB%A7%E6%89%BF%E6%96%B9%E6%B3%95%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.2.4.1.</span> <span class="toc-text">继承成员变量和继承方法的区别</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E4%B8%AD%E7%9A%84%E5%AD%90%E7%B1%BB%E5%AE%9E%E4%BE%8B"><span class="toc-number">2.2.5.</span> <span class="toc-text">内存中的子类实例</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E7%88%B6%E3%80%81%E5%AD%90%E7%B1%BB%E7%9A%84%E7%B1%BB%E5%8F%98%E9%87%8F"><span class="toc-number">2.2.5.1.</span> <span class="toc-text">关于父、子类的类变量</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#final%E4%BF%AE%E9%A5%B0%E7%AC%A6"><span class="toc-number">2.3.</span> <span class="toc-text">final修饰符</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#final%E4%BF%AE%E9%A5%B0%E5%8F%98%E9%87%8F"><span class="toc-number">2.3.1.</span> <span class="toc-text">final修饰变量</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%E5%8F%98%E9%87%8F"><span class="toc-number">2.3.1.1.</span> <span class="toc-text">实例变量</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%B1%BB%E5%8F%98%E9%87%8F"><span class="toc-number">2.3.1.2.</span> <span class="toc-text">类变量</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E2%80%9C%E5%AE%8F%E6%9B%BF%E6%8D%A2%E2%80%9D%E7%9A%84%E5%8F%98%E9%87%8F"><span class="toc-number">2.4.</span> <span class="toc-text">执行“宏替换”的变量</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        JAVA面试讲义-对象及其内存管理
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-09-06T10:23:38.000Z" class="dt-published" itemprop="datePublished">2023-09-06</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h2><p>在写程序时，不可避免的需要创建实例，在创建时不要盲目的随意创建，要考虑对象创建的系统开销。<br>我们不仅仅要停留在代码层次写程序，还要考虑每行代码对系统内存的影响！！！<br>所以需要清楚 java对象的内存分配机制。</p>
+<p>Jave内存管理分为两部分内容：<br>内存分配：创建Java对象时JVM为该对象在堆内存中所分配的内存空间<br>内存回收：Java对象失去引用，变成垃圾时，JVM的垃圾回收机制自动清理该对象，并回收该对象所占用的内存空间。</p>
+<h2 id="实例变量和类变量"><a href="#实例变量和类变量" class="headerlink" title="实例变量和类变量"></a>实例变量和类变量</h2><p>Java程序的变量分为 成员变量 和 局部变量。</p>
+<p>局部变量可分为三类：<br>形参：在方法签名中定义的局部变量， 有方法调用者负责为其赋值，随方法的结束而消亡。<br>方法内的局部变量：在方法内定义的局部变量，必须在方法内对其显示初始化。从初始化完成后开始生效，随方法的结束而消亡。<br>代码块内的局部变量：在代码块内定义的局部变量，必须在代码块内对其进行显示初始化。从初始化完成后开始生效，随代码块的结束而消亡<br>局部变量的作用时间很短暂，都被存储在栈内存中。</p>
+<p>成员变量 在类体内定义的变量，如果没有被static修饰则为非静态变量或实例变量；若使用static修饰则被称为静态变量或类变量。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">拓展 static</span><br><span class="line">static只能修饰在类里定义的成员部分，包括成员变量、方法、内部类（枚举或接口）、初始化块。如过没有使用static修饰类里的这些成员，这些成员属于该类的实例（随对象的初始化而初始化，即new 对象时）；如果使用static修饰，这些成员就属于类本身（随类的初始化而初始化）。</span><br><span class="line"></span><br><span class="line">static只能修饰类里的成员，不能修饰外部类，不能修饰局部变量、局部内部类。</span><br></pre></td></tr></table></figure>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><p>由于同一个JVM内每个类只对应一个class对象，所以同一个JVM内的类的类变量只需要一块内存空间，但对于实例变量而言，该类没创建一次实例，就需要为实例变量分配一块内存空间。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line">    String name;</span><br><span class="line">    <span class="type">int</span> age;</span><br><span class="line">    <span class="keyword">static</span> <span class="type">int</span> eyeNum;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">info</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;我的名字是：&quot;</span> + name + <span class="string">&quot;, 我的年龄是：&quot;</span> + age);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FieldTest</span> &#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">//类变量属于类本身，只要该类初始化完成 程序即可使用类变量</span></span><br><span class="line">        Person.eyeNum = <span class="number">2</span>;</span><br><span class="line">        System.out.println(<span class="string">&quot;Person的eyeNum是：&quot;</span> + Person.eyeNum); <span class="comment">// Person的eyeNum是：2</span></span><br><span class="line">        <span class="comment">//创建第一个Person对象</span></span><br><span class="line">        <span class="type">Person</span> <span class="variable">p</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Person</span>();</span><br><span class="line">        p.name = <span class="string">&quot;王慧娟&quot;</span>;</span><br><span class="line">        p.age = <span class="number">44</span>;</span><br><span class="line">        <span class="comment">//通过p访问Person的eyeNum类变量</span></span><br><span class="line">        System.out.println(<span class="string">&quot;由p变量访问eyeNum: &quot;</span> + p.eyeNum); <span class="comment">// 由p变量访问eyeNum: 2</span></span><br><span class="line">        p.info();</span><br><span class="line">        <span class="comment">//创建第二个Person对象</span></span><br><span class="line">        <span class="type">Person</span> <span class="variable">p2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Person</span>();</span><br><span class="line">        p2.name = <span class="string">&quot;封存一&quot;</span>;</span><br><span class="line">        p2.age = <span class="number">30</span>;</span><br><span class="line">        p2.info();</span><br><span class="line">        <span class="comment">//通过p2修改eyeNum</span></span><br><span class="line">        p2.eyeNum = <span class="number">3</span>;</span><br><span class="line">        System.out.println(<span class="string">&quot;修改后由Person访问eyeNum: &quot;</span> + Person.eyeNum);<span class="comment">// 修改后由Person访问eyeNum: 3</span></span><br><span class="line">        System.out.println(<span class="string">&quot;修改后由p变量访问eyeNum: &quot;</span> + p.eyeNum); <span class="comment">// 修改后由p变量访问eyeNum: 3</span></span><br><span class="line">        System.out.println(<span class="string">&quot;修改后由p2变量访问eyeNum: &quot;</span> + p2.eyeNum);<span class="comment">// 修改后由p2变量访问eyeNum: 3</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Person类内存分配示意图<br>！<a href="../images/JavaImg/Person%E7%B1%BB%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E7%A4%BA%E6%84%8F%E5%9B%BE.png">Person类内存分配示意图</a></p>
+<h3 id="初始化时机"><a href="#初始化时机" class="headerlink" title="初始化时机"></a>初始化时机</h3><h4 id="实例变量初始化时机"><a href="#实例变量初始化时机" class="headerlink" title="实例变量初始化时机"></a>实例变量初始化时机</h4><p>实例变量属于Java对象本身。从程序运行的角度来说，每次程序创建Java对象时都需要为其分配内存空间，并对实例变量进行初始化。</p>
+<p>代码实例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Cat</span> &#123;</span><br><span class="line">    String name;</span><br><span class="line">    <span class="type">int</span> age;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Cat</span><span class="params">(String name, <span class="type">int</span> age)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;执行构造器&quot;</span>);</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">        <span class="built_in">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line">    &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;执行非静态初始化代码块&quot;</span>);</span><br><span class="line">        weight = <span class="number">2.0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">double</span> <span class="variable">weight</span> <span class="operator">=</span> <span class="number">2.3</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Cat&#123;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;name=&#x27;&quot;</span> + name + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, age=&quot;</span> + age +</span><br><span class="line">                <span class="string">&quot;, weight=&quot;</span> + weight +</span><br><span class="line">                <span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">initTest</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="type">Cat</span> <span class="variable">cat</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Cat</span>(<span class="string">&quot;kitty&quot;</span>, <span class="number">2</span>);</span><br><span class="line">        System.out.println(cat);</span><br><span class="line">        <span class="type">Cat</span> <span class="variable">cat1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Cat</span>(<span class="string">&quot;Garfield&quot;</span>, <span class="number">3</span>);</span><br><span class="line">        System.out.println(cat1);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>执行结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">执行非静态初始化代码块</span><br><span class="line">执行构造器</span><br><span class="line">Cat&#123;name=&#x27;kitty&#x27;, age=2, weight=2.3&#125;</span><br><span class="line">执行非静态初始化代码块</span><br><span class="line">执行构造器</span><br><span class="line">Cat&#123;name=&#x27;Garfield&#x27;, age=3, weight=2.3&#125;</span><br></pre></td></tr></table></figure>
+<p>两个Cat内存分配示意图<br>！<a href="../images/JavaImg/%E4%B8%A4%E4%B8%AACat%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E7%A4%BA%E6%84%8F%E5%9B%BE.png">两个Cat内存分配示意图</a></p>
+<p>从图中可以看出Cat对象的weight实例变量的值是2.3,而不是2.0。这是因为：初始化块中指定初始值，定义weight时指定初始值，都属于对该实例变量执行初始化操作，他们的执行顺序与它们在源码的排列顺序相同。初始化块中对weight 的赋值语句位于定义weight语句之前，因此程序先执行weight &#x3D; 2.0,在执行weight&#x3D;2.3,2.0会被2.3覆盖。</p>
+<p>定义实例变量时指定初始值、初始化块中为实例变量指定初始值的语句的地位是平等的，经过编译器处理后，他们都将被提取到构造器中。也就是说</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">double</span> <span class="variable">weight</span> <span class="operator">=</span> <span class="number">2.3</span></span><br></pre></td></tr></table></figure>
+<p>实际上会被分为两次执行<br>① double weight; 创建java对象时系统根据语句为该对象分配内存<br>② weight &#x3D; 2.3; 这条语句会被提取到java类的构造器中执行</p>
+<p>示例程序 JavaToolTest：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JavaToolTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="number">20</span>;</span><br><span class="line">    &#123;</span><br><span class="line">        count = <span class="number">12</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">JavaToolTest</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(count);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">JavaToolTest</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        System.out.println(name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可使用javap -c JavaToolTest.class 命令查看编译器对JavaToolTest类做的处理。<br>JavaToolTest编译-javap分析图<br><img src="/../images/JavaImg/JavaToolTest%E7%BC%96%E8%AF%91-javap%E5%88%86%E6%9E%90%E5%9B%BE.png" alt="JavaToolTest编译-javap分析图"></p>
+<p>由图可见经编译器处理后，初始化块的代码消失了，两个构造器中分别包含了初始化块里的语句（count&#x3D;12）。且定义count实例变量时没有初始值，为count指定初始值的代码也被提取到了构造器里。</p>
+<h4 id="类变量的初始化时机"><a href="#类变量的初始化时机" class="headerlink" title="类变量的初始化时机"></a>类变量的初始化时机</h4><p>类变量属于类本身，从程序运行角度看来，每个JVM对一个java类只初始化一次，只有每次运行java程序时，才会初始化该Java类，才会为该类的类变量分配内存空间，并执行初始化。</p>
+<p>代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Price</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">Price</span> <span class="variable">INSTANCE</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Price</span>(<span class="number">2.8</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="type">double</span> <span class="variable">initPrice</span> <span class="operator">=</span> <span class="number">20</span>;</span><br><span class="line">    <span class="type">double</span> currentPrice;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Price</span><span class="params">(<span class="type">double</span> discount)</span> &#123;</span><br><span class="line">        currentPrice = initPrice - discount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">PriceTest</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(Price.INSTANCE.currentPrice); <span class="comment">//-2.8</span></span><br><span class="line">        <span class="type">Price</span> <span class="variable">price</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Price</span>(<span class="number">2.8</span>);</span><br><span class="line">        System.out.println(price.currentPrice); <span class="comment">//17.2</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-2.8</span><br><span class="line">17.2</span><br></pre></td></tr></table></figure>
+<p>从内存角度分析：<br>第一次用到Price类时，程序对Price进行初始化，分为两个阶段<br>① 系统为Price的两个变量分配内存空间<br>② 按初始化代码的顺序对类变量执行初始化</p>
+<p>初始化第一阶段：先为INSTANCE、initPrice两个变量分配内存空间，此时默认值分别是null和0.0。 【int INSTANCE; double initPrice;】<br>初始化第二阶段：程序按顺序先为INSTANCE【INSTANCE &#x3D; new Price(2.8);】。<br>                    对INSTANCE进行赋值时要调用new Price(2.8)创建Price实例，此时执行到“currentPrice &#x3D; initPrice - discount;”,此时initPrice还是0.0，因此赋值结果是currentPrice&#x3D;0.0-2.8。<br>           	   接下来为initPrice赋值为20【 initPrice &#x3D; 20;】<br>执行“Price price &#x3D; new Price(2.8);”是initPrice已经是20所以price.currentPrice 是17.2</p>
+<h4 id="访问子类对象的实例对象"><a href="#访问子类对象的实例对象" class="headerlink" title="访问子类对象的实例对象"></a>访问子类对象的实例对象</h4><p>当变量的编译时类型和运行时类型不同时，<br>①通过该变量访问其引用对象的实例变量时，该实例变量的值由声明该变量的类型决定。<br>②通过该变量调用它引用对象的实例方法时，该方法的行为将由它实际所引用的对象来决定。</p>
+<p><font style="color: orange;">注意： 当this在构造器中时，this代表正在初始化的java对象。</font></p>
+<p>代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Base</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">//！！！！this在构造器中时，this代表正在初始化的java对象。此示例是执行new Derived()初始化的事Derived所以this是Derived</span></span><br><span class="line">        System.out.println(<span class="built_in">this</span>.i); <span class="comment">//this位于base的构造器中，所以它的编译时类型是Base,this.i = 2 即①。而它的实际引用是Derived</span></span><br><span class="line">        <span class="built_in">this</span>.display(); <span class="comment">//调用的是Derived中的display，display方法的行为是Derived中的，即②</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">display</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derived</span> <span class="keyword">extends</span> <span class="title class_">Base</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * private int i; 默认值0</span></span><br><span class="line"><span class="comment">     * i = 22; //会在构造器内进行赋值操作</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">22</span>; </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Derived</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">//此处隐式调用了Base.Base();</span></span><br><span class="line">        i = <span class="number">222</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">display</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">BaseTest</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Derived</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>运行结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0</span><br></pre></td></tr></table></figure>
+<h4 id="父、子实例的内存控制"><a href="#父、子实例的内存控制" class="headerlink" title="父、子实例的内存控制"></a>父、子实例的内存控制</h4><h5 id="继承成员变量和继承方法的区别"><a href="#继承成员变量和继承方法的区别" class="headerlink" title="继承成员变量和继承方法的区别"></a>继承成员变量和继承方法的区别</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> String name;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">info</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Wolf</span> <span class="keyword">extends</span> <span class="title class_">Animal</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">double</span> weight ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><font style="color: red;">只有当子类使用public修饰，父类不使用public修饰时，才可以用过javap看到编译器将父类是public方法直接转移到子类中！！！</font><br>编译Animal和Wolf后</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javap -c -private .\Wolf.class</span><br></pre></td></tr></table></figure>
+<p>Wolf编译-javap分析图<br><img src="/../images/JavaImg/Wolf%E7%BC%96%E8%AF%91-javap%E5%88%86%E6%9E%90%E5%9B%BE.png" alt="Wolf编译-javap分析图"></p>
+<p>直接上代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">display</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="built_in">this</span>.count);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derived</span> <span class="keyword">extends</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"></span><br><span class="line">   <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="number">20</span>;</span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">display</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="built_in">this</span>.count);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">BaseTest</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">Base</span> <span class="variable">b</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Base</span>();</span><br><span class="line">        <span class="comment">//直接访问count实例变量</span></span><br><span class="line">        System.out.println( b.count);<span class="comment">//2</span></span><br><span class="line">        <span class="comment">//通过display方法访问count实例变量</span></span><br><span class="line">        b.display();<span class="comment">//2</span></span><br><span class="line"></span><br><span class="line">        <span class="type">Derived</span> <span class="variable">d</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Derived</span>();</span><br><span class="line">        <span class="comment">//直接访问count</span></span><br><span class="line">        System.out.println(d.count);<span class="comment">//20</span></span><br><span class="line">        <span class="comment">//通过display访问</span></span><br><span class="line">        d.display();<span class="comment">//20</span></span><br><span class="line"></span><br><span class="line">        <span class="type">Base</span> <span class="variable">bd</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Derived</span>(); <span class="comment">//表示声明类型是Base， 实际引用对象的类型是Derived</span></span><br><span class="line">        System.out.println(bd.count);<span class="comment">//2</span></span><br><span class="line">        bd.display();<span class="comment">//20</span></span><br><span class="line"></span><br><span class="line">        Base b2d= d;</span><br><span class="line">        System.out.println(b2d.count); <span class="comment">//2</span></span><br><span class="line">        b2d.display();<span class="comment">//20</span></span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>总结：<br>对于方法,如果子类重写了父类方法，意味着子类定义的方法彻底覆盖了父类里的同名方法，系统不会在再将父类里的方法移到子类中，<br>对于实例变量,即使子类中定义了与父类完全同名的实例变量，也不会覆盖父类中定义的实例变量。<br>所以对于一个引用类型的变量来说，当通过该变量访问它引用的对象的实例变量时，该实例变量的值取决于声明该变量的类型<font style="color: orange;">【也就是看变量名前面是哪个类就去那个类里的值】</font>；当通过该变量来调用它所引用的对象的方法时，该方法的行为取决于它实际引用的对象类型<font style="color: orange;">【也就是new 后面是哪个类就调那个类里的方法】</font></p>
+<h4 id="内存中的子类实例"><a href="#内存中的子类实例" class="headerlink" title="内存中的子类实例"></a>内存中的子类实例</h4><p>父类Base， Mid extends Base, Sub extend Mid,当new Sub()时，系统内存中只有一个sub对象，但这个sub对象中不仅保存了Sub类中定义的所有实例变量，还保存了他所有父类定义的全部实例变量。内存中并不会创建sub的父类对象。</p>
+<p>引出疑问，既然内存中并没有父类实例，那“super代表父类的默认实例”这句话就是错误的，那super的作用到底是什么？【super只是显示的调用子类对象实例中父类的这部分代码】</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Fruit</span> &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">color</span> <span class="operator">=</span> <span class="string">&quot;unknown color&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> Fruit <span class="title function_">getThis</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">info</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Fruit-info方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Apple</span> <span class="keyword">extends</span> <span class="title class_">Fruit</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">info</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Apple-info 方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//通过super调用父类的info()方法</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">AccessSuperInfo</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.info();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//尝试返回super关键字代表的内容</span></span><br><span class="line">    <span class="keyword">public</span> Fruit <span class="title function_">getSuper</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>.getThis();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">String</span> <span class="variable">color</span> <span class="operator">=</span> <span class="string">&quot;red&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">fruitTest</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">Apple</span> <span class="variable">a</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Apple</span>();</span><br><span class="line">        <span class="type">Fruit</span> <span class="variable">f</span> <span class="operator">=</span> a.getSuper();</span><br><span class="line">        System.out.println(<span class="string">&quot;a和f的引用对象是否相同：&quot;</span> + (a == f)); <span class="comment">//true</span></span><br><span class="line">        System.out.println(<span class="string">&quot;访问a所引用对象的color实例变量: &quot;</span> + a.color); <span class="comment">//red</span></span><br><span class="line">        System.out.println(<span class="string">&quot;访问f所引用对象的color实例变量: &quot;</span> + f.color); <span class="comment">// unknown color</span></span><br><span class="line">        a.info(); <span class="comment">//Apple-info方法</span></span><br><span class="line">        f.info();<span class="comment">// Apple-info方法</span></span><br><span class="line">        a.AccessSuperInfo(); <span class="comment">// Fruit-info方法</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>分析：由返回结果可以看出 a.getSuper()返回的依然是Apple对象本身，只不过它的声明类型是Fruit,所以通过f.color的值是由Fruit类决定的，f.color &#x3D; “unknown color”。但通过f.info()方法时，info方法的行为是有实际引用类型【Apple】决定的，所以f.info()输出“Apple-info方法”。</p>
+<p>当程序在Apple类的AccessSuperInfo()方法中使用super.作为限定调用info()方法时，该info才真正表现出Fruit类的行为。</p>
+<h5 id="关于父、子类的类变量"><a href="#关于父、子类的类变量" class="headerlink" title="关于父、子类的类变量"></a>关于父、子类的类变量</h5><p>类变量【static修饰的变量】属于类本身， 实例变量属于java对象。类变量在类初始化阶段完成初始化，实例变量则在对象初始化阶段完成初始化。</p>
+<p>由于类变量本质上属于类本身，所以通常不会存在父子实例变量复杂的情形。但由于java允许通过对象来访问类变量，所以也可以使用super.作为限定来访问父类中定义的变量。但还是推荐直接使用父类名.field来访问，代码可读性比较高。</p>
+<h3 id="final修饰符"><a href="#final修饰符" class="headerlink" title="final修饰符"></a>final修饰符</h3><p>final可以修改变量，被final修饰的变量再被赋初始值后，不能再被修改<br>final可以修饰方法，被final修饰的方法不能被重写<br>fianl可以修饰类，被final修饰的类不能被继承</p>
+<h4 id="final修饰变量"><a href="#final修饰变量" class="headerlink" title="final修饰变量"></a>final修饰变量</h4><h5 id="实例变量"><a href="#实例变量" class="headerlink" title="实例变量"></a>实例变量</h5><p>final修饰的变量必须显式指定初始值，且只能在三个位置指定：<br>① 定义final实例变量时指定<br>② 在非静态初始化块中为final实例变量指定初始值<br>③ 在构造器中为final实例变量指定初始值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FinalInstanceVariableTest</span> &#123;</span><br><span class="line">    <span class="comment">//定义final实例变量时指定初始值</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">int</span> <span class="variable">count1</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">int</span> count2;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//初始化块中指定final实例变量初始值</span></span><br><span class="line">        count2 = <span class="number">100</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">int</span> count3;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">FinalInstanceVariableTest</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">//构造器中指定final实例变量初始值</span></span><br><span class="line">        <span class="built_in">this</span>.count3 = <span class="number">150</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>final赋值-javap分析图<br><img src="/../images/JavaImg/final%E8%B5%8B%E5%80%BC-javap%E5%88%86%E6%9E%90%E5%9B%BE.png" alt="final赋值-javap分析图"></p>
+<h5 id="类变量"><a href="#类变量" class="headerlink" title="类变量"></a>类变量</h5><p>final类变量，也必须显式地指定初始值，只能在两个地方制定<br>① 定义final类变量时指定<br>② 在静态代码块中指定</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FinalStaticInstanceVariableTest</span> &#123;</span><br><span class="line">    <span class="comment">//定义final实例变量时指定初始值</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">scount1</span> <span class="operator">=</span> <span class="string">&quot;aaaaaaaaa&quot;</span>.length();</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">int</span> scount2;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="comment">//初始化块中指定final实例变量初始值</span></span><br><span class="line">        scount2 = <span class="string">&quot;bbbbbb&quot;</span>.length();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>final_static赋值-javap分析图<br><img src="/../images/JavaImg/final_static%E8%B5%8B%E5%80%BC-javap%E5%88%86%E6%9E%90%E5%9B%BE.png" alt="final_static赋值-javap分析图"></p>
+<h3 id="执行“宏替换”的变量"><a href="#执行“宏替换”的变量" class="headerlink" title="执行“宏替换”的变量"></a>执行“宏替换”的变量</h3><p>final修饰符的一个重要用途就是定义“宏变量”。final变量在定义时就被指定初始值，而且初始化值可以在编译时就确定下来，那么这个final变量本质上就是一个“宏变量”，编译器会把程序中所有用到该变量的地方直接替换成该变量的值。<br><font style="color: red;">注意！！只有在定义final变量时就指定初始值，此变量才是宏变量。在外面定义final变量，但在构造器或者代码块中指定final变量的值，这种变量虽然被final修饰但并不是宏变量，不会进行“宏替换”</font></p>
+<font style="color: orange;">
+局部内部类（包含匿名内部类）中的局部变量默认有final修饰，不论写不写final,final修饰符都在。 
+在任何局部内部类中访问的局部变量默认也都有final修饰
+</font>
+强调局部内部类 是因为只有局部内部类（包含匿名内部类）才可以访问局部变量，普通静态内部类、非静态内部不能访问方法体内的局部变量。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E7%AF%87"><span class="toc-number">1.</span> <span class="toc-text">开篇</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%E5%8F%98%E9%87%8F%E5%92%8C%E7%B1%BB%E5%8F%98%E9%87%8F"><span class="toc-number">2.</span> <span class="toc-text">实例变量和类变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7"><span class="toc-number">2.1.</span> <span class="toc-text">属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%97%B6%E6%9C%BA"><span class="toc-number">2.2.</span> <span class="toc-text">初始化时机</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%E5%8F%98%E9%87%8F%E5%88%9D%E5%A7%8B%E5%8C%96%E6%97%B6%E6%9C%BA"><span class="toc-number">2.2.1.</span> <span class="toc-text">实例变量初始化时机</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B1%BB%E5%8F%98%E9%87%8F%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E6%97%B6%E6%9C%BA"><span class="toc-number">2.2.2.</span> <span class="toc-text">类变量的初始化时机</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E5%AD%90%E7%B1%BB%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%AE%9E%E4%BE%8B%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.2.3.</span> <span class="toc-text">访问子类对象的实例对象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%B6%E3%80%81%E5%AD%90%E5%AE%9E%E4%BE%8B%E7%9A%84%E5%86%85%E5%AD%98%E6%8E%A7%E5%88%B6"><span class="toc-number">2.2.4.</span> <span class="toc-text">父、子实例的内存控制</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BB%A7%E6%89%BF%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F%E5%92%8C%E7%BB%A7%E6%89%BF%E6%96%B9%E6%B3%95%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.2.4.1.</span> <span class="toc-text">继承成员变量和继承方法的区别</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E4%B8%AD%E7%9A%84%E5%AD%90%E7%B1%BB%E5%AE%9E%E4%BE%8B"><span class="toc-number">2.2.5.</span> <span class="toc-text">内存中的子类实例</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E7%88%B6%E3%80%81%E5%AD%90%E7%B1%BB%E7%9A%84%E7%B1%BB%E5%8F%98%E9%87%8F"><span class="toc-number">2.2.5.1.</span> <span class="toc-text">关于父、子类的类变量</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#final%E4%BF%AE%E9%A5%B0%E7%AC%A6"><span class="toc-number">2.3.</span> <span class="toc-text">final修饰符</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#final%E4%BF%AE%E9%A5%B0%E5%8F%98%E9%87%8F"><span class="toc-number">2.3.1.</span> <span class="toc-text">final修饰变量</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%E5%8F%98%E9%87%8F"><span class="toc-number">2.3.1.1.</span> <span class="toc-text">实例变量</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%B1%BB%E5%8F%98%E9%87%8F"><span class="toc-number">2.3.1.2.</span> <span class="toc-text">类变量</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E2%80%9C%E5%AE%8F%E6%9B%BF%E6%8D%A2%E2%80%9D%E7%9A%84%E5%8F%98%E9%87%8F"><span class="toc-number">2.4.</span> <span class="toc-text">执行“宏替换”的变量</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&text=JAVA面试讲义-对象及其内存管理"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&title=JAVA面试讲义-对象及其内存管理"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&is_video=false&description=JAVA面试讲义-对象及其内存管理"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JAVA面试讲义-对象及其内存管理&body=Check out this article: http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&title=JAVA面试讲义-对象及其内存管理"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&title=JAVA面试讲义-对象及其内存管理"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&title=JAVA面试讲义-对象及其内存管理"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&title=JAVA面试讲义-对象及其内存管理"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&name=JAVA面试讲义-对象及其内存管理&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/09/06/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/&t=JAVA面试讲义-对象及其内存管理"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

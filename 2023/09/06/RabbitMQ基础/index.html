@@ -6,16 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="&lt;link rel&#x3D;&quot;shortcut icon&quot; href&#x3D;&quot;&#x2F;images&#x2F;favicon.ico&quot;&gt;                       &lt;link rel&#x3D;&quot;ic">
+    <meta name="description" content="目前个人认为，学习一个知识点，首先要弄清楚1、是什么？类似的东西有什么？消息中间件;类似：kafka, RocketMQ2、能做什么？能够实现异步消息处理，接收和转发消息3、使用场景有哪些 ？4、优势、优点是什么？5、劣势、缺点是什么？6、实现机制是什么？7、一些专业名词8、使用过程中存在的问题有什么？如何解决？9、思考且弄清楚每一个点的实现   RabbitMQ基础RabbitMQ 是一个由Er">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo">
+<meta property="og:title" content="RabbitMQ基础">
 <meta property="og:url" content="http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="&lt;link rel&#x3D;&quot;shortcut icon&quot; href&#x3D;&quot;&#x2F;images&#x2F;favicon.ico&quot;&gt;                       &lt;link rel&#x3D;&quot;ic">
+<meta property="og:description" content="目前个人认为，学习一个知识点，首先要弄清楚1、是什么？类似的东西有什么？消息中间件;类似：kafka, RocketMQ2、能做什么？能够实现异步消息处理，接收和转发消息3、使用场景有哪些 ？4、优势、优点是什么？5、劣势、缺点是什么？6、实现机制是什么？7、一些专业名词8、使用过程中存在的问题有什么？如何解决？9、思考且弄清楚每一个点的实现   RabbitMQ基础RabbitMQ 是一个由Er">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-Simple-Model.png">
-<meta property="article:published_time" content="2023-09-05T17:31:10.763Z">
-<meta property="article:modified_time" content="2023-09-05T17:32:05.852Z">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-Work-Queues.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-Publish-SubScribe.png">
+<meta property="article:published_time" content="2023-09-05T17:31:10.000Z">
+<meta property="article:modified_time" content="2023-09-10T15:55:17.572Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/RabbitMQ/RabbitMQ-Simple-Model.png">
@@ -38,7 +40,7 @@
       
     
     <!-- title -->
-    <title>Hexo</title>
+    <title>RabbitMQ基础</title>
     <!-- async scripts -->
     <!-- Google Analytics -->
 
@@ -57,7 +59,7 @@
     
 	<!-- mathjax -->
 	
-</head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
     
@@ -100,23 +102,23 @@
     <div id="share" style="display: none">
       <ul>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&text="><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title="><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&is_video=false&description="><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=&body=Check out this article: http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title="><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title="><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title="><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title="><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&name=&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&t="><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&text=RabbitMQ基础"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&is_video=false&description=RabbitMQ基础"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RabbitMQ基础&body=Check out this article: http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&name=RabbitMQ基础&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&t=RabbitMQ基础"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#AMQP-Advanced-Message-Queuing-Protocol-%E9%AB%98%E7%BA%A7%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.</span> <span class="toc-text">AMQP(Advanced Message Queuing Protocol 高级消息队列协议)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%85%E5%90%AB%E7%B1%BB%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">包含类：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Connection%E7%B1%BB%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">Connection类：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Channel%E7%B1%BB%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">Channel类：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exchange%E7%B1%BB"><span class="toc-number">2.3.</span> <span class="toc-text">Exchange类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Queue%E7%B1%BB"><span class="toc-number">2.3.1.</span> <span class="toc-text">Queue类</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.</span> <span class="toc-text">使用场景:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-%E4%BC%98%E5%8A%BF"><span class="toc-number">4.</span> <span class="toc-text">RabbitMQ 优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-%E5%8A%A3%E5%8A%BF"><span class="toc-number">5.</span> <span class="toc-text">RabbitMQ 劣势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8MQ%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="toc-number">6.</span> <span class="toc-text">使用MQ的条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-%E4%BD%BFAMQP%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">7.</span> <span class="toc-text">RabbitMQ 使AMQP协议的实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="toc-number">8.</span> <span class="toc-text">RabbitMQ的工作模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E6%A8%A1%E5%BC%8F"><span class="toc-number">8.1.</span> <span class="toc-text">简单模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#channel-queueDeclare-String-queue-boolean-durable-boolean-exclusive-boolean-autoDelete-Map-lt-String-Object-gt-arguments"><span class="toc-number">8.2.</span> <span class="toc-text">channel.queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete,Map&lt;String, Object&gt; arguments)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#channel-basicPublish-String-exchange-String-routingKey-AMQP-BasicProperties-props-byte-body"><span class="toc-number">8.3.</span> <span class="toc-text">channel.basicPublish(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#channel-basicConsume-String-queue-boolean-autoAck-DeliverCallback-deliverCallback-CancelCallback-cancelCallback"><span class="toc-number">8.4.</span> <span class="toc-text">channel.basicConsume(String queue, boolean autoAck, DeliverCallback deliverCallback, CancelCallback cancelCallback)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Work-Queues"><span class="toc-number">8.5.</span> <span class="toc-text">Work Queues</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Publish-Subscribe"><span class="toc-number">8.6.</span> <span class="toc-text">Publish&#x2F;Subscribe</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Routing-%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F"><span class="toc-number">8.7.</span> <span class="toc-text">Routing 路由模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Topic-%E4%B8%BB%E9%A2%98%E6%A8%A1%E5%BC%8F"><span class="toc-number">8.8.</span> <span class="toc-text">Topic 主题模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RPC%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">8.9.</span> <span class="toc-text">RPC远程调用模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Publisher-Confirms"><span class="toc-number">8.10.</span> <span class="toc-text">Publisher Confirms</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">RabbitMQ基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AMQP-Advanced-Message-Queuing-Protocol-%E9%AB%98%E7%BA%A7%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.1.</span> <span class="toc-text">AMQP(Advanced Message Queuing Protocol 高级消息队列协议)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">2.</span> <span class="toc-text">使用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-%E4%BC%98%E5%8A%BF"><span class="toc-number">3.</span> <span class="toc-text">RabbitMQ 优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-%E5%8A%A3%E5%8A%BF"><span class="toc-number">4.</span> <span class="toc-text">RabbitMQ 劣势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8MQ%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="toc-number">5.</span> <span class="toc-text">使用MQ的条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-%E6%98%AFAMQP%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">6.</span> <span class="toc-text">RabbitMQ 是AMQP协议的实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="toc-number">7.</span> <span class="toc-text">RabbitMQ的工作模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#channel-queueDeclare-String-queue-boolean-durable-boolean-exclusive-boolean-autoDelete-Map-String-Object-arguments"><span class="toc-number">7.1.</span> <span class="toc-text">channel.queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete,Map String, Object arguments)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#channel-basicPublish-String-exchange-String-routingKey-AMQP-BasicProperties-props-byte-body"><span class="toc-number">7.2.</span> <span class="toc-text">channel.basicPublish(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#channel-basicConsume-String-queue-boolean-autoAck-DeliverCallback-deliverCallback-CancelCallback-cancelCallback"><span class="toc-number">7.3.</span> <span class="toc-text">channel.basicConsume(String queue, boolean autoAck, DeliverCallback deliverCallback, CancelCallback cancelCallback)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Work-Queues"><span class="toc-number">7.4.</span> <span class="toc-text">Work Queues</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Publish-Subscribe"><span class="toc-number">7.5.</span> <span class="toc-text">Publish&#x2F;Subscribe</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Routing-%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F"><span class="toc-number">7.6.</span> <span class="toc-text">Routing 路由模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Topic-%E4%B8%BB%E9%A2%98%E6%A8%A1%E5%BC%8F"><span class="toc-number">7.7.</span> <span class="toc-text">Topic 主题模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RPC%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">7.8.</span> <span class="toc-text">RPC远程调用模式</span></a></li></ol></li></ol>
       </div>
     
   </span>
@@ -129,7 +131,7 @@
   <header>
     
     <h1 class="posttitle p-name" itemprop="name headline">
-        
+        RabbitMQ基础
     </h1>
 
 
@@ -141,7 +143,7 @@
       
     <div class="postdate">
       
-        <time datetime="2023-09-05T17:31:10.763Z" class="dt-published" itemprop="datePublished">2023-09-06</time>
+        <time datetime="2023-09-05T17:31:10.000Z" class="dt-published" itemprop="datePublished">2023-09-06</time>
         
       
     </div>
@@ -156,490 +158,460 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <!DOCTYPE html>
-<html lang=en>
-<head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="目前个人认为，学习一个知识点，首先要弄清楚1、是什么？类似的东西有什么？  消息中间件;类似：kafka, RocketMQ2、能做什么？                 能够实现异步消息处理，接收和转发消息3、使用场景有哪些 ？4、优势&#x2F;优点是什么？5、劣势&#x2F;缺点是什么？6、实现机制是什么？7、一些专业名词8、使用过程中存在的问题有什么？如何解决？9、思考且弄清楚每一个点的实现  RabbitM">
-<meta property="og:type" content="article">
-<meta property="og:title" content="RabbitMQ基础">
-<meta property="og:url" content="http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="目前个人认为，学习一个知识点，首先要弄清楚1、是什么？类似的东西有什么？  消息中间件;类似：kafka, RocketMQ2、能做什么？                 能够实现异步消息处理，接收和转发消息3、使用场景有哪些 ？4、优势&#x2F;优点是什么？5、劣势&#x2F;缺点是什么？6、实现机制是什么？7、一些专业名词8、使用过程中存在的问题有什么？如何解决？9、思考且弄清楚每一个点的实现  RabbitM">
-<meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-Simple-Model.png">
-<meta property="article:published_time" content="2023-05-08T03:04:54.000Z">
-<meta property="article:modified_time" content="2023-05-09T09:02:10.074Z">
-<meta property="article:author" content="John Doe">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/RabbitMQ/RabbitMQ-Simple-Model.png">
-    
-    
-      
-        
-<pre><code>      &lt;link rel=&quot;shortcut icon&quot; href=&quot;/images/favicon.ico&quot;&gt;
-    
-  
-  
-    
-      &lt;link rel=&quot;icon&quot; type=&quot;image/png&quot; href=&quot;/images/favicon-192x192.png&quot; sizes=&quot;192x192&quot;&gt;
-    
-  
-  
-    
-      &lt;link rel=&quot;apple-touch-icon&quot; sizes=&quot;180x180&quot; href=&quot;/images/apple-touch-icon.png&quot;&gt;
-    
-  
-
-&lt;!-- title --&gt;
-&lt;title&gt;RabbitMQ基础&lt;/title&gt;
-&lt;!-- styles --&gt;
-</code></pre>
-<link rel="stylesheet" href="/css/style.css">
-
-<pre><code>&lt;!-- persian styles --&gt;
-
-&lt;!-- rss --&gt;
-
-
-&lt;!-- mathjax --&gt;
-</code></pre>
-<meta name="generator" content="Hexo 5.4.2"></head>
-
-<body class="max-width mx-auto px3 ltr">
-    
-<pre><code>  &lt;div id=&quot;header-post&quot;&gt;
-</code></pre>
-<p>  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a><br>  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a><br>  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a><br>  <span id="menu"><br>    <span id="nav"><br>      <ul><br>        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
-     --><!--
-       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
-     --><br>      </ul><br>    </span><br>    <br/><br>    <span id="actions"><br>      <ul></p>
-<pre><code>    &lt;li&gt;&lt;a class=&quot;icon&quot; aria-label=&quot;Previous post&quot; href=&quot;/2023/05/23/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&quot;&gt;&lt;i class=&quot;fas fa-chevron-left&quot; aria-hidden=&quot;true&quot; onmouseover=&quot;$(&#39;#i-prev&#39;).toggle();&quot; onmouseout=&quot;$(&#39;#i-prev&#39;).toggle();&quot;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    &lt;li&gt;&lt;a class=&quot;icon&quot; aria-label=&quot;Next post&quot; href=&quot;/2023/04/16/Volcano%E9%A1%B9%E7%9B%AE-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8/&quot;&gt;&lt;i class=&quot;fas fa-chevron-right&quot; aria-hidden=&quot;true&quot; onmouseover=&quot;$(&#39;#i-next&#39;).toggle();&quot; onmouseout=&quot;$(&#39;#i-next&#39;).toggle();&quot;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    &lt;li&gt;&lt;a class=&quot;icon&quot; aria-label=&quot;Back to top&quot; href=&quot;#&quot; onclick=&quot;$(&#39;html, body&#39;).animate(&#123; scrollTop: 0 &#125;, &#39;fast&#39;);&quot;&gt;&lt;i class=&quot;fas fa-chevron-up&quot; aria-hidden=&quot;true&quot; onmouseover=&quot;$(&#39;#i-top&#39;).toggle();&quot; onmouseout=&quot;$(&#39;#i-top&#39;).toggle();&quot;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a class=&quot;icon&quot; aria-label=&quot;Share post&quot; href=&quot;#&quot;&gt;&lt;i class=&quot;fas fa-share-alt&quot; aria-hidden=&quot;true&quot; onmouseover=&quot;$(&#39;#i-share&#39;).toggle();&quot; onmouseout=&quot;$(&#39;#i-share&#39;).toggle();&quot; onclick=&quot;$(&#39;#share&#39;).toggle();return false;&quot;&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;/ul&gt;
-  &lt;span id=&quot;i-prev&quot; class=&quot;info&quot; style=&quot;display:none;&quot;&gt;Previous post&lt;/span&gt;
-  &lt;span id=&quot;i-next&quot; class=&quot;info&quot; style=&quot;display:none;&quot;&gt;Next post&lt;/span&gt;
-  &lt;span id=&quot;i-top&quot; class=&quot;info&quot; style=&quot;display:none;&quot;&gt;Back to top&lt;/span&gt;
-  &lt;span id=&quot;i-share&quot; class=&quot;info&quot; style=&quot;display:none;&quot;&gt;Share post&lt;/span&gt;
-&lt;/span&gt;
-&lt;br/&gt;
-&lt;div id=&quot;share&quot; style=&quot;display: none&quot;&gt;
-  &lt;ul&gt;
-</code></pre>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&text=RabbitMQ基础"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&is_video=false&description=RabbitMQ基础"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=RabbitMQ基础&body=Check out this article: http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&name=RabbitMQ基础&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&t=RabbitMQ基础"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-<pre><code>&lt;/div&gt;
-&lt;div id=&quot;toc&quot;&gt;
-  &lt;ol class=&quot;toc&quot;&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#AMQP-Advanced-Message-Queuing-Protocol-%E9%AB%98%E7%BA%A7%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%8D%8F%E8%AE%AE&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;1.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;AMQP(Advanced Message Queuing Protocol 高级消息队列协议)&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#%E5%8C%85%E5%90%AB%E7%B1%BB%EF%BC%9A&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;2.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;包含类：&lt;/span&gt;&lt;/a&gt;&lt;ol class=&quot;toc-child&quot;&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Connection%E7%B1%BB%EF%BC%9A&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;2.1.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Connection类：&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Channel%E7%B1%BB%EF%BC%9A&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;2.2.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Channel类：&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Exchange%E7%B1%BB&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;2.3.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Exchange类&lt;/span&gt;&lt;/a&gt;&lt;ol class=&quot;toc-child&quot;&gt;&lt;li class=&quot;toc-item toc-level-4&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Queue%E7%B1%BB&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;2.3.1.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Queue类&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;3.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;使用场景:&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#RabbitMQ-%E4%BC%98%E5%8A%BF&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;4.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;RabbitMQ 优势&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#RabbitMQ-%E5%8A%A3%E5%8A%BF&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;5.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;RabbitMQ 劣势&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#%E4%BD%BF%E7%94%A8MQ%E7%9A%84%E6%9D%A1%E4%BB%B6&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;6.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;使用MQ的条件&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#RabbitMQ-%E4%BD%BFAMQP%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%AE%9E%E7%8E%B0&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;7.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;RabbitMQ 使AMQP协议的实现&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#RabbitMQ%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;RabbitMQ的工作模式&lt;/span&gt;&lt;/a&gt;&lt;ol class=&quot;toc-child&quot;&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#%E7%AE%80%E5%8D%95%E6%A8%A1%E5%BC%8F&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.1.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;简单模式&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#channel-queueDeclare-String-queue-boolean-durable-boolean-exclusive-boolean-autoDelete-Map-lt-String-Object-gt-arguments&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.2.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;channel.queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete,Map&amp;lt;String, Object&amp;gt; arguments)&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#channel-basicPublish-String-exchange-String-routingKey-AMQP-BasicProperties-props-byte-body&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.3.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;channel.basicPublish(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body)&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#channel-basicConsume-String-queue-boolean-autoAck-DeliverCallback-deliverCallback-CancelCallback-cancelCallback&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.4.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;channel.basicConsume(String queue, boolean autoAck, DeliverCallback deliverCallback, CancelCallback cancelCallback)&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Work-Queues&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.5.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Work Queues&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Publish-Subscribe&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.6.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Publish&amp;#x2F;Subscribe&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Routing-%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.7.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Routing 路由模式&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Topic-%E4%B8%BB%E9%A2%98%E6%A8%A1%E5%BC%8F&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.8.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Topic 主题模式&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#RPC%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8%E6%A8%A1%E5%BC%8F&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.9.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;RPC远程调用模式&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Publisher-Confirms&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.10.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Publisher Confirms&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;/ol&gt;
-&lt;/div&gt;
-</code></pre>
-  </span>
-</div>
-
-    
-<pre><code>&lt;div class=&quot;content index py4&quot;&gt;
-    
-    &lt;article class=&quot;post&quot; itemscope itemtype=&quot;http://schema.org/BlogPosting&quot;&gt;
-</code></pre>
-  <header>
-    
-<pre><code>&lt;h1 class=&quot;posttitle&quot; itemprop=&quot;name headline&quot;&gt;
-    RabbitMQ基础
-&lt;/h1&gt;
-
-
-
-&lt;div class=&quot;meta&quot;&gt;
-  &lt;span class=&quot;author&quot; itemprop=&quot;author&quot; itemscope itemtype=&quot;http://schema.org/Person&quot;&gt;
-    &lt;span itemprop=&quot;name&quot;&gt;John Doe&lt;/span&gt;
-  &lt;/span&gt;
-  
-&lt;div class=&quot;postdate&quot;&gt;
-  
-    &lt;time datetime=&quot;2023-05-08T03:04:54.000Z&quot; itemprop=&quot;datePublished&quot;&gt;2023-05-08&lt;/time&gt;
-    
-  
-&lt;/div&gt;
-
-
-  
-
-  
-
-&lt;/div&gt;
-</code></pre>
-  </header>
-  
-
-  <div class="content" itemprop="articleBody">
-    <p>目前个人认为，学习一个知识点，首先要弄清楚<br>1、是什么？类似的东西有什么？  消息中间件;类似：kafka, RocketMQ<br>2、能做什么？                 能够实现异步消息处理，接收和转发消息<br>3、使用场景有哪些 ？<br>4、优势/优点是什么？<br>5、劣势/缺点是什么？<br>6、实现机制是什么？<br>7、一些专业名词<br>8、使用过程中存在的问题有什么？如何解决？<br>9、思考且弄清楚每一个点的实现</p>
-<hr>
-<p>RabbitMQ 是一个由Erlang语言开发的AMQP协议的开源实现，能够实现异步消息处理。是一个消息代理，接收和转发消息。</p>
-<p>Erlang是为电话交换机编写的语言，天然对分布式和高并发支持良好。<br>AMQP是一个进程间传递异步消息的网络协议，该协议实现了事务机制，所以RabbitMQ也支持事务机制</p>
-<h2 id="AMQP-Advanced-Message-Queuing-Protocol-高级消息队列协议"><a href="#AMQP-Advanced-Message-Queuing-Protocol-高级消息队列协议" class="headerlink" title="AMQP(Advanced Message Queuing Protocol 高级消息队列协议)"></a>AMQP(Advanced Message Queuing Protocol 高级消息队列协议)</h2><p>AMQP包含网络协议和服务端服务，一个网络层协议可以让客户端与实现了AMQP协议的服务端通信</p>
-<p>AMQ Model 高级消息队列协议模型<br>包含组件：<br>exchange（交换器）：从Publisher程序中收取消息，并把这些消息根据一些规则路由到消息队列（Message Queue）中<br>message queue（消息队列）：存储消息。直到消息被安全的投递给了消费者。<br>binding ：定义了 message queue 和 exchange 之间的关系，提供了消息路由的规则。</p>
-<h2 id="包含类："><a href="#包含类：" class="headerlink" title="包含类："></a>包含类：</h2><h3 id="Connection类："><a href="#Connection类：" class="headerlink" title="Connection类："></a>Connection类：</h3><p>AMQP是一个长连接协议。Connection被设计为长期使用的，可以携带多个Channel。</p>
-<h3 id="Channel类："><a href="#Channel类：" class="headerlink" title="Channel类："></a>Channel类：</h3><p>一个轻量级的connection连接，AMQP是一个多通道协议，Channel提供了一种方式，在比较重的TCP/IP连接上建立多个轻量级的连接。这会让协议对防火墙更加友好，因为端口使用是可预知的。它也意味着很容易支持流量调整和其他QoS特性。<br>Channels相互是独立的，可以同步执行不同的功能。可用带宽会在当前活动之间共享。<br>多线程客户端程序可以使用 每个线程一个channel 的模型。不过，一个客户端在一个或多个AMQP服务端上打开多个连接也是可以的。</p>
-<h3 id="Exchange类"><a href="#Exchange类" class="headerlink" title="Exchange类"></a>Exchange类</h3><p>Exchange类能够让应用操作服务端的交换器。这个类能够让程序自己设置路由，而不是通过某些配置。</p>
-<h4 id="Queue类"><a href="#Queue类" class="headerlink" title="Queue类"></a>Queue类</h4><p>让程序管理服务端上的消息队列。<br>几乎所有的消费者应用都是基本步骤，至少要验证使用的消息队列是否存在。</p>
-<hr>
-<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景:"></a>使用场景:</h2><p>1、用户下单时，产生新的订单, 减少库存，支付，生成订单。<br>分布式系统分为 订单系统，库存系统，支付系统等等。。。<br>如果没有MQ库存系统和支付系统等应用到订单系统的需要直接调用订单系统，<br>如果高并发情况下订单系统压力会很大，可能会造成系统崩溃等问题。<br>或者如果想要新添加一个系统也应用到订单系统，涉及到代码改动，可能会影响库存和支付，系统耦合性高</p>
-<h2 id="RabbitMQ-优势"><a href="#RabbitMQ-优势" class="headerlink" title="RabbitMQ 优势"></a>RabbitMQ 优势</h2><p>1、应用解耦，提高系统的容错性和可维护性<br>场景1下 使用MQ 用户下单后消息发送到MQ，然后由其他系统来异步消费MQ的消息，可以使系统间解耦</p>
-<p>2、异步提速，提升用户体验和系统吞吐量<br>场景1下 使用MQ 用户下单后可以将订单信息直接写入DB,不需要等待后续支付等过程，减库存和支付系统异步消费MQ的消息</p>
-<p>3、削峰填谷，提高系统稳定性</p>
-<p>A系统最大支持每秒1000个请求，如果并发量高于1000系统可能会崩掉，用户端体验就是卡死。如果加入MQ后，用户的请求全部打到MQ,用户端直接显示完成，MQ并发量可达1.2w+，所以不会受影响，此时A系统每次从MQ取1000条消息消费，直至消息消费结束</p>
-<h2 id="RabbitMQ-劣势"><a href="#RabbitMQ-劣势" class="headerlink" title="RabbitMQ 劣势"></a>RabbitMQ 劣势</h2><p>1、系统可用性降低，MQ宕掉会影响业务流程。  ===&gt;??? 如何保证MQ的高可用？</p>
-<p>2、系统复杂度提高，之前是两个系统远程调用，现在使用MQ异步调用 ===&gt;??? 如何保证消息不被重复消费？ 怎么处理消息丢失的情况？ 如何保证消息传递的顺序性？</p>
-<p>3、一致性问题，A系统处理完后，通过MQ将消息发给B,C,D,如果B,C消费成功，但D消费失败就会出现数据不一致问题 ===&gt;???如何保证消息的一致性呢？</p>
+    <p>目前个人认为，学习一个知识点，首先要弄清楚<br>1、是什么？类似的东西有什么？<br>消息中间件;类似：kafka, RocketMQ<br>2、能做什么？<br>能够实现异步消息处理，接收和转发消息<br>3、使用场景有哪些 ？<br>4、优势、优点是什么？<br>5、劣势、缺点是什么？<br>6、实现机制是什么？<br>7、一些专业名词<br>8、使用过程中存在的问题有什么？如何解决？<br>9、思考且弄清楚每一个点的实现  </p>
+<h2 id="RabbitMQ基础"><a href="#RabbitMQ基础" class="headerlink" title="RabbitMQ基础"></a>RabbitMQ基础</h2><p>RabbitMQ 是一个由Erlang语言开发的AMQP协议的开源实现，能够实现异步消息处理。是一个消息代理，接收和转发消息。<br>Erlang是为电话交换机编写的语言，天然对分布式和高并发支持良好。<br>AMQP是一个进程间传递异步消息的网络协议，该协议实现了事务机制，所以RabbitMQ也支持事务机制</p>
+<h3 id="AMQP-Advanced-Message-Queuing-Protocol-高级消息队列协议"><a href="#AMQP-Advanced-Message-Queuing-Protocol-高级消息队列协议" class="headerlink" title="AMQP(Advanced Message Queuing Protocol 高级消息队列协议)"></a>AMQP(Advanced Message Queuing Protocol 高级消息队列协议)</h3><p>AMQP包含网络协议和服务端服务，一个网络层协议可以让客户端与实现了AMQP协议的服务端通信<br><font style="color: orange;">AMQ Model 高级消息队列协议模型包含组件</font></p>
+<table>
+<thead>
+<tr>
+<th align="left">组件名</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">exchange(交换器)</td>
+<td align="left">从Publisher程序中收取消息，并把这些消息根据一些规则路由到消息队列（Message Queue）中</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></br></td>
+</tr>
+<tr>
+<td align="left">message queue(消息队列)</td>
+<td align="left">存储消息。直到消息被安全的投递给了消费者</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></br></td>
+</tr>
+<tr>
+<td align="left"><font style="color: yellowgreen;">binding</font></td>
+<td align="left">定义了 message queue 和 exchange 之间的关系，提供了消息路由的规则。</td>
+</tr>
+</tbody></table>
+<p><font style="color: yellowgreen;"> ** binding 组件中包含 ** </font></p>
+<table>
+<thead>
+<tr>
+<th align="left">类名</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Connection类</td>
+<td align="left">AMQP是一个长连接协议。Connection被设计为长期使用的，可以携带多个Channel。</td>
+</tr>
+<tr>
+<td align="left">Channel类</td>
+<td align="left">一个轻量级的connection连接。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">AMQP是一个多通道协议，Channel提供了一种方式，在比较重的TCP&#x2F;IP连接上建立多个轻量级的连接，这会让协议对防火墙更加友好，因为端口使用是可预知的。它也意味着很容易支持流量调整和其他QoS特性。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">Channels相互是独立的，可以同步执行不同的功能。可用带宽会在当前活动之间共享。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">多线程客户端程序可以使用 每个线程一个channel 的模型。不过，一个客户端在一个或多个AMQP服务端上打开多个连接也是可以的。</td>
+</tr>
+<tr>
+<td align="left">Exchange类</td>
+<td align="left">Exchange类能够让应用操作服务端的交换器。这个类能够让程序自己设置路由，而不是通过某些配置。</td>
+</tr>
+<tr>
+<td align="left">Queue类</td>
+<td align="left">让程序管理服务端上的消息队列。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">几乎所有的消费者应用都是基本步骤，至少要验证使用的消息队列是否存在。</td>
+</tr>
+</tbody></table>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>1、用户下单时，产生新的订单, 减少库存，支付，生成订单。<br>    分布式系统分为 订单系统，库存系统，支付系统等等。。。<br>    如果没有MQ库存系统和支付系统等应用到订单系统的需要直接调用订单系统，<br>    如果高并发情况下订单系统压力会很大，可能会造成系统崩溃等问题。<br>    或者如果想要新添加一个系统也应用到订单系统，涉及到代码改动，可能会影响库存和支付，系统耦合性高</p>
+<h2 id="RabbitMQ-优势"><a href="#RabbitMQ-优势" class="headerlink" title="RabbitMQ 优势"></a>RabbitMQ 优势</h2><p>1、应用解耦，提高系统的容错性和可维护性<br>    场景1下 使用MQ 用户下单后消息发送到MQ，然后由其他系统来异步消费MQ的消息，可以使系统间解耦</p>
+<p>2、异步提速，提升用户体验和系统吞吐量<br>    场景1下 使用MQ 用户下单后可以将订单信息直接写入DB,不需要等待后续支付等过程，减库存和支付系统异步消费MQ的消息</p>
+<p>3、削峰填谷，提高系统稳定性<br>    A系统最大支持每秒1000个请求，如果并发量高于1000系统可能会崩掉，用户端体验就是卡死。如果加入MQ后，用户的请求全部打到MQ,用户端直接显示完成，MQ并发量可达1.2w+，所以不会受影响，此时A系统每次从MQ取1000条消息消费，直至消息消费结束</p>
+<h2 id="RabbitMQ-劣势"><a href="#RabbitMQ-劣势" class="headerlink" title="RabbitMQ 劣势"></a>RabbitMQ 劣势</h2><p>1、系统可用性降低，MQ宕掉会影响业务流程。  &#x3D;&#x3D;&#x3D;&gt; ??? 如何保证MQ的高可用？<br>2、系统复杂度提高，之前是两个系统远程调用，现在使用MQ异步调用 &#x3D;&#x3D;&#x3D;&gt; ??? 如何保证消息不被重复消费？ 怎么处理消息丢失的情况？ 如何保证消息传递的顺序性？<br>3、一致性问题，A系统处理完后，通过MQ将消息发给B,C,D,如果B,C消费成功，但D消费失败就会出现数据不一致问题 &#x3D;&#x3D;&#x3D;&gt;???如何保证消息的一致性呢？</p>
 <h2 id="使用MQ的条件"><a href="#使用MQ的条件" class="headerlink" title="使用MQ的条件"></a>使用MQ的条件</h2><p>1、生产者不需要从消费者出获得结果反馈。<br>2、容许短暂的不一致性<br>3、确实是有效果的，即在解耦、提速、削峰这些方面的收益远大于加入MQ和管理MQ的成本</p>
-<hr>
-<h2 id="RabbitMQ-使AMQP协议的实现"><a href="#RabbitMQ-使AMQP协议的实现" class="headerlink" title="RabbitMQ 使AMQP协议的实现"></a>RabbitMQ 使AMQP协议的实现</h2><p>Producer： 消息生产者</p>
-<p>Connection：Producer / Consumer与Rabbitmq Broker之间的TCP连接</p>
-<p>Channel：轻量级Connection,每次通信都需要创建TCP Connection，开销比较大，所以使用channel作为Connection的内部逻辑，每次只需要创建channel即可。<br>每个Channel都是独立的，多线程程序通常每个thread创建一个独立的Channel进行通讯</p>
-<p>Broker： 即Rabbitmq server ,用于接收和分发消息。 </p>
-<ul>
-<li>有多个Virtual Host(虚拟主机), RabbitMQ有一个默认的vhost，就是“/”，<br>每个Virtual Host 都包含<ul>
-<li>Exchange (交换机) 是虚拟主机内的消息路由Agent。用于处理消息的路由信息（一般是Routing-Key），然后将其发送到消息队列或者内部服务中。<pre><code>   交换机绑定方式：
-   direct（point-to-point）直连交换机
-       1、一个消息队列使用RoutingKey K 绑定到交换器
-    2、生产者向交换器发送RoutingKey为R的消息
-    3、当 K=R时，消息被转发到该消息队列中
-topic（publish-subscribe 发布-订阅） 主题交换机/通配符交换机 [*.error.*, error.#]
-    1、消息队列使用路由规则 P 绑定到交换器
-    2、生产者使用RoutingKey R 发送消息到交换器
-    3、如果R 能够匹配 P，则把消息发到该消息队列。
-    RoutingKey必须由若干个被点.分隔的单词组成。每个单词只能包含字母和数字。其中 * 匹配一个单词，# 匹配0个或者多个单词。
-    比如 \*.stock.# 匹配 usd.stock 和 eur.stock.db 但是不匹配 stock.nasdaq
-fanout（multicast）扇形交换机/广播交换机
-    1、一个消息队列没有使用任何参数绑定交换器
-    2、生产者向交换器发了一条消息
-    3、这个消息无条件的发送到该消息队列
-    发送消息到每一个与之绑定的队列
-Headers 交换器
-    1、消息队列使用Header的参数表来绑定。不适用RoutingKey
-    2、生产者向交换器发送消息，Header中包含了指定的键值对
-    3、如果匹配，则传给消息队列。
-    例如：
-    format=json,type=log,x-match=all
-    format=line,type=log,x-match=any
-    如果 x-match 为all，则必须都匹配才行。如果x-match为any，则有任意一个header匹配即可。
-</code></pre>
-</li>
-<li>Queue (消息队列) 用于存储消息，实际上消息是存储在Mnesia数据库里。是生产者与消费者的纽带，生产者发送的消息到达队列，在队列中存储，消费者从队列中消费消息。</li>
-<li>Binding :包含Routing key，保存在Exchang的查询表中，作为消息的分发依据</li>
-</ul>
-</li>
-</ul>
-<p>Consumer: 消费者</p>
-<ul>
-<li>消费者如何消费消息呢？？？<ul>
-<li>两种方式：<pre><code>1、Pull模式，即每隔一段时间获取一次消息，消息的实时性会有所降低，但同时消费的主动权在消费端，
-            消费端可以根据自身情况什么时候去Pull。
-2、Push模式，即生产者发送消息后，Broker就马上推送给消费者，消息保存在客户端，实时性要求高，
-            但是如果消费端消费不过来就会造成消息积压。
-  如果生产者的消息会发送到多个队列，这时候如果使用push的方式就需要多次push，
-  会增加了生产者的成本，所以使用Exchange。
-  不管有多少个队列需要接收消息，我们都只需发送到Exchange就OK了，由它来根据具体的绑定规则分发到具体的队列。
-</code></pre>
-</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h2 id="RabbitMQ的工作模式"><a href="#RabbitMQ的工作模式" class="headerlink" title="RabbitMQ的工作模式"></a>RabbitMQ的工作模式</h2><h3 id="简单模式"><a href="#简单模式" class="headerlink" title="简单模式"></a>简单模式</h3><p><img src="/images/RabbitMQ/RabbitMQ-Simple-Model.png" alt="简单模式图"></p>
-<!-- <img src = "/images/RabbitMQ/RabbitMQ-Simple-Model.png"> -->
-<p>send.java</p>
-<code>
-    import com.rabbitmq.client.ConnectionFactory;<br>
-    import com.rabbitmq.client.Connection;<br>
-    import com.rabbitmq.client.Channel;<br>
-    public class Send &#123; <br>
-         //定义一个队列queue<br>
-          private final static String QUEUE_NAME = "hello";<br>
-          public static void main(String[] argv) throws Exception &#123;<br>
-              ConnectionFactory factory = new ConnectionFactory(); <br>
-            factory.setHost("localhost");<br>
-            try &#123;
-                Connection connection = factory.newConnection();<br>
-                 Channel channel = connection.createChannel(); <br>
-                 channel.queueDeclare(QUEUE_NAME, false, false, false, null);<br>
-                String message = "Hello World!";<br>
-                //将消息发布到队列<br>
-                channel.basicPublish("", QUEUE_NAME, null, message.getBytes());<br>
-                System.out.println(" [x] Sent '" + message + "'");<br>
-            &#125;
-        &#125;
-      &#125;
-&#125;
-</code>
+<h2 id="RabbitMQ-是AMQP协议的实现"><a href="#RabbitMQ-是AMQP协议的实现" class="headerlink" title="RabbitMQ 是AMQP协议的实现"></a>RabbitMQ 是AMQP协议的实现</h2><p><font style="color: orange;">RabbitMQ中的角色</font></p>
+<table>
+<thead>
+<tr>
+<th align="left">名称</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Producer</td>
+<td align="left">消息生产者</td>
+</tr>
+<tr>
+<td align="left">Connection</td>
+<td align="left">Producer &#x2F; Consumer与Rabbitmq Broker之间的TCP连接</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></br></td>
+</tr>
+<tr>
+<td align="left">Channel</td>
+<td align="left">轻量级Connection,每次通信都需要创建</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">TCP Connection，开销比较大，所以使用channel作为Connection的内部逻辑，每次只需要创建channel即可。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">每个Channel都是独立的，多线程程序通常每个thread创建一个独立的Channel进行通讯</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></br></td>
+</tr>
+<tr>
+<td align="left">Broker</td>
+<td align="left">即Rabbitmq server,用于接收和分发消息,Broker有多个<font style="color: yellowgreen;">Virtual Host(虚拟主机)</font>,</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">RabbitMQ有一个默认的vhost，就是“&#x2F;”</td>
+</tr>
+</tbody></table>
+<p><font style="color: yellowgreen;">** 每个Virtual Host 都包含 ** </font></p>
+<table>
+<thead>
+<tr>
+<th align="left">名称</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Exchange (交换机)</td>
+<td align="left">是虚拟主机内的消息路由Agent。用于处理消息的路由信息（一般是Routing-Key），然后将其发送到消息队列或者内部服务中。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">交换机绑定方式：</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><font style="color: green;">direct（point-to-point）直连交换机</font></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">1. 一个消息队列使用RoutingKey K 绑定到交换器</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">2、生产者向交换器发送RoutingKey为R的消息</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">3、当 K&#x3D;R时，消息被转发到该消息队列中</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><font style="color: green;">topic（publish-subscribe 发布-订阅） 主题交换机&#x2F;通配符交换机 [*.error.*, error.#] </font></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">1、消息队列使用路由规则 P 绑定到交换器</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">2、生产者使用RoutingKey R 发送消息到交换器</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">3、如果R 能够匹配 P，则把消息发到该消息队列。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">RoutingKey必须由若干个被点.分隔的单词组成。每个单词只能包含字母和数字。其中 * 匹配一个单词，# 匹配0个或者多个单词。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">比如 *.stock.# 匹配 usd.stock 和 eur.stock.db 但是不匹配 stock.nasdaq</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><font style="color: green;">fanout（multicast）扇形交换机&#x2F;广播交换机</font></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">1、一个消息队列没有使用任何参数绑定交换器</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">2、生产者向交换器发了一条消息</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">3、这个消息无条件的发送到该消息队列,发送消息到每一个与之绑定的队列</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><font style="color: green;">Headers 交换器</font></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">1、消息队列使用Header的参数表来绑定。不适用RoutingKey</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">2、生产者向交换器发送消息，Header中包含了指定的键值对</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">3、如果匹配，则传给消息队列。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">例如：</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">format&#x3D;json,type&#x3D;log,x-match&#x3D;all</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">format&#x3D;line,type&#x3D;log,x-match&#x3D;any</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">如果 x-match 为all，则必须都匹配才行。如果x-match为any，则有任意一个header匹配即可。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></br></td>
+</tr>
+<tr>
+<td align="left">Queue (消息队列)</td>
+<td align="left">用于存储消息，实际上消息是存储在Mnesia数据库里。是生产者与消费者的纽带，生产者发送的消息到达队列, 在队列中存储，消费者从队列中消费消息。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></br></td>
+</tr>
+<tr>
+<td align="left">Binding</td>
+<td align="left">包含Routing key，保存在Exchang的查询表中，作为消息的分发依据</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></br></td>
+</tr>
+<tr>
+<td align="left">Consumer(消费者)</td>
+<td align="left"><font style="color: red;">消费者如何消费消息呢？？？</font></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">两种方式：</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">1、Pull模式，即每隔一段时间获取一次消息，消息的实时性会有所降低，但同时消费的主动权在消费端，消费端可以根据自身情况什么时候去Pull。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">2、Push模式，即生产者发送消息后，Broker就马上推送给消费者，消息保存在客户端，实时性要求高，但是如果消费端消费不过来就会造成消息积压。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">如果生产者的消息会发送到多个队列，这时候如果使用push的方式就需要多次push，会增加了生产者的成本，所以使用Exchange。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">不管有多少个队列需要接收消息，我们都只需发送到Exchange就OK了，由它来根据具体的绑定规则分发到具体的队列。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h2 id="RabbitMQ的工作模式"><a href="#RabbitMQ的工作模式" class="headerlink" title="RabbitMQ的工作模式"></a>RabbitMQ的工作模式</h2><p>简单模式:<br><img src="/../images/RabbitMQ/RabbitMQ-Simple-Model.png" alt="简单模式"><br>send.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Send</span> &#123; </span><br><span class="line">     <span class="comment">//定义一个队列queue&lt;br&gt;</span></span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable">QUEUE_NAME</span> <span class="operator">=</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">      <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] argv)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">          <span class="type">ConnectionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConnectionFactory</span>(); </span><br><span class="line">        factory.setHost(<span class="string">&quot;localhost&quot;</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> factory.newConnection();</span><br><span class="line">             <span class="type">Channel</span> <span class="variable">channel</span> <span class="operator">=</span> connection.createChannel();</span><br><span class="line">             channel.queueDeclare(QUEUE_NAME, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">null</span>);</span><br><span class="line">            <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;Hello World!&quot;</span>;&gt;</span><br><span class="line">            <span class="comment">//将消息发布到队列</span></span><br><span class="line">            channel.basicPublish(<span class="string">&quot;&quot;</span>, QUEUE_NAME, <span class="literal">null</span>, message.getBytes());</span><br><span class="line">            System.out.println(<span class="string">&quot; [x] Sent &#x27;&quot;</span> + message + <span class="string">&quot;&#x27;&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>receive.java</p>
-<code>
-    import com.rabbitmq.client.ConnectionFactory;<br>
-    import com.rabbitmq.client.Connection;<br>
-    import com.rabbitmq.client.Channel;<br>
-    public class Send &#123; <br>
-         //定义一个队列queue<br>
-          private final static String QUEUE_NAME = "hello";<br>
-          public static void main(String[] argv) throws Exception &#123;<br>
-              ConnectionFactory factory = new ConnectionFactory(); <br>
-            factory.setHost("localhost");<br>
-            try &#123;
-                Connection connection = factory.newConnection();<br>
-                 Channel channel = connection.createChannel(); <br>
-                 channel.queueDeclare(QUEUE_NAME, false, false, false, null);<br>
-                System.out.println(" [*] Waiting for messages. To exit press CTRL+C");<br>
-                // 回调函数<br>
-                DeliverCallback deliverCallback = (consumerTag, delivery) -> &#123;<br>
-                    String message = new String(delivery.getBody(), "UTF-8");<br>
-                    System.out.println(" [x] Received '" + message + "'");<br>
-                &#125;;<br>
-                // 消费消息<br>
-                channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> &#123; &#125;);
-            &#125;
-        &#125;
-      &#125;
-&#125;
-</code>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Send</span> &#123;</span><br><span class="line">     <span class="comment">//定义一个队列queue&lt;br&gt;</span></span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable">QUEUE_NAME</span> <span class="operator">=</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">      <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] argv)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">          <span class="type">ConnectionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConnectionFactory</span>(); </span><br><span class="line">      </span><br><span class="line">        factory.setHost(<span class="string">&quot;localhost&quot;</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> factory.newConnection();</span><br><span class="line">             <span class="type">Channel</span> <span class="variable">channel</span> <span class="operator">=</span> connection.createChannel(); </span><br><span class="line">             channel.queueDeclare(QUEUE_NAME, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">null</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot; [*] Waiting for messages. To exit press CTRL+C&quot;</span>);</span><br><span class="line">            <span class="comment">// 回调函数&lt;br&gt;</span></span><br><span class="line">            <span class="type">DeliverCallback</span> <span class="variable">deliverCallback</span> <span class="operator">=</span> (consumerTag, delivery) -&gt; &#123;</span><br><span class="line">                <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(delivery.getBody(), <span class="string">&quot;UTF-8&quot;</span>);</span><br><span class="line">                System.out.println(<span class="string">&quot; [x] Received &#x27;&quot;</span> + message + <span class="string">&quot;&#x27;&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 消费消息&lt;br&gt;</span></span><br><span class="line">            channel.basicConsume(QUEUE_NAME, <span class="literal">true</span>, deliverCallback, consumerTag -&gt; &#123;&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="channel-queueDeclare-String-queue-boolean-durable-boolean-exclusive-boolean-autoDelete-Map-lt-String-Object-gt-arguments"><a href="#channel-queueDeclare-String-queue-boolean-durable-boolean-exclusive-boolean-autoDelete-Map-lt-String-Object-gt-arguments" class="headerlink" title="channel.queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete,Map&lt;String, Object&gt; arguments)"></a>channel.queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete,Map&lt;String, Object&gt; arguments)</h3><p>queueDeclare声明队列，用于实现通道与队列的绑定<br>参数解释：</p>
+<h3 id="channel-queueDeclare-String-queue-boolean-durable-boolean-exclusive-boolean-autoDelete-Map-String-Object-arguments"><a href="#channel-queueDeclare-String-queue-boolean-durable-boolean-exclusive-boolean-autoDelete-Map-String-Object-arguments" class="headerlink" title="channel.queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete,Map String, Object arguments)"></a>channel.queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete,Map String, Object arguments)</h3><p>queueDeclare声明队列，用于实现通道与队列的绑定</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="left">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">queue</td>
+<td align="left">队列的名称</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></br></td>
+</tr>
+<tr>
+<td align="left">durable</td>
+<td align="left">是否持久化</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">false 队列非持久化。因为队列是存放在内存中的，所以当RabbitMQ重启或者服务器重启时该队列就会丢失</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">true 队列持久化。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">当RabbitMQ重启后队列不会丢失。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">RabbitMQ退出时它会将队列信息保存到Erlang自带的Mnesia数据库中，当RabbitMQ重启之后会读取该数据库</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></br></td>
+</tr>
+<tr>
+<td align="left">exclusive</td>
+<td align="left">是否排外的</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">true则设置队列为排他的。表示队列仅对首次声明它的连接（Connection）可见，是该Connection私有的，类似于加锁，并在连接断开connection.close()时自动删除；排他队列是 基于连接(Connection) 可见的，同个连接（Connection）的不同管道 (Channel)是可以同时访问同一连接创建的排他队列 。其他连接是访问不了的 ，强制访问将报错。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">false则设置队列为非排他的，此时不同连接（Connection）的管道Channel可以使用该队列。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></br></td>
+</tr>
+<tr>
+<td align="left">autoDelete</td>
+<td align="left">是否自动删除</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">如果autoDelete &#x3D; true，当所有消费者都与这个队列断开连接时，这个队列会自动删除。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">注意：不是说该队列没有消费者连接时该队列就会自动删除，因为当生产者声明了该队列且没有消费者连接消费时，该队列是不会自动删除的。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></br></td>
+</tr>
+<tr>
+<td align="left">arguments</td>
+<td align="left">设置队列的其他一些参数</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">如 x-rnessage-ttl、x-expires、x-rnax-length、x-rnax-length-bytes、x-dead-letter-exchange、x-deadletter-routing-key 、 x-rnax-priority 等</td>
+</tr>
+</tbody></table>
+<p><font style="color: orange;"> —————————————————————————————————————————————————————————————————————————————————— </font></p>
+<h3 id="channel-basicPublish-String-exchange-String-routingKey-AMQP-BasicProperties-props-byte-body"><a href="#channel-basicPublish-String-exchange-String-routingKey-AMQP-BasicProperties-props-byte-body" class="headerlink" title="channel.basicPublish(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body)"></a>channel.basicPublish(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body)</h3><p>basicPublish 对消息进行一些设置</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="left">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">exchange</td>
+<td align="left">要将消息发送到的交换器</td>
+</tr>
+<tr>
+<td align="left">routingKey</td>
+<td align="left">路由KEY</td>
+</tr>
+<tr>
+<td align="left">props</td>
+<td align="left">消息的其它属性，如：路由头等</td>
+</tr>
+<tr>
+<td align="left">body</td>
+<td align="left">消息体</td>
+</tr>
+</tbody></table>
+<p><font style="color: orange;"> —————————————————————————————————————————————————————————————————————————————————— </font></p>
+<h3 id="channel-basicConsume-String-queue-boolean-autoAck-DeliverCallback-deliverCallback-CancelCallback-cancelCallback"><a href="#channel-basicConsume-String-queue-boolean-autoAck-DeliverCallback-deliverCallback-CancelCallback-cancelCallback" class="headerlink" title="channel.basicConsume(String queue, boolean autoAck, DeliverCallback deliverCallback, CancelCallback cancelCallback)"></a>channel.basicConsume(String queue, boolean autoAck, DeliverCallback deliverCallback, CancelCallback cancelCallback)</h3><table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="left">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">queue</td>
+<td align="left">队列名</td>
+</tr>
+<tr>
+<td align="left">autoAck</td>
+<td align="left">true 接收到传递过来的消息后acknowledged（应答服务器）</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">false 接收到消息后不应答服务器</td>
+</tr>
+<tr>
+<td align="left">deliverCallback</td>
+<td align="left">当一个消息发送过来后的回调接口</td>
+</tr>
+<tr>
+<td align="left">cancelCallback</td>
+<td align="left">当一个消费者取消订阅时的回调接口;</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">取消消费者订阅队列时除了使用{@link Channel#basicCancel}之外的所有方式都会调用该回调方法</td>
+</tr>
+</tbody></table>
+<p><font style="color: orange;"> &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; </font></p>
+<h3 id="Work-Queues"><a href="#Work-Queues" class="headerlink" title="Work Queues"></a>Work Queues</h3><p>官方文档： <a target="_blank" rel="noopener" href="https://www.rabbitmq.com/tutorials/tutorial-two-java.html">https://www.rabbitmq.com/tutorials/tutorial-two-java.html</a></p>
+<p><img src="/../images/RabbitMQ/RabbitMQ-Work-Queues.png" alt="RabbitMQ-Work-Queues"></p>
 <ol>
-<li>queue： 队列的名称；</li>
-<li>durable： 是否持久化；<pre><code> false 队列非持久化。因为队列是存放在内存中的，所以当RabbitMQ重启或者服务器重启时该队列就会丢失
- true 队列持久化。当RabbitMQ重启后队列不会丢失。RabbitMQ退出时它会将队列信息保存到 Erlang自带的Mnesia数据库中，当RabbitMQ重启之后会读取该数据库；
-</code></pre>
-</li>
-<li>exclusive： 是否排外的；<pre><code> true则设置队列为排他的。表示队列 仅对首次声明它的连接（Connection）可见，是该Connection私有的，类似于加锁，并在连接断开connection.close()时自动删除；排他队列是 基于连接(Connection) 可见的，同个连接（Connection）的不同管道 (Channel) 是可以同时访问同一连接创建的排他队列 。其他连接是访问不了的 ，强制访问将报错。
- false则设置队列为非排他的，此时不同连接（Connection）的管道Channel可以使用该队列。
-</code></pre>
-</li>
-<li>autoDelete： 是否自动删除 ；如果autoDelete = true，当所有消费者都与这个队列断开连接时，这个队列会自动删除。<pre><code> 注意：不是说该队列没有消费者连接时该队列就会自动删除，因为当生产者声明了该队列且没有消费者连接消费时，该队列是不会自动删除的。
-</code></pre>
-</li>
-<li>arguments： 设置队列的其他一些参数<pre><code> 如 x-rnessage-ttl、x-expires、x-rnax-length、x-rnax-length-bytes、x-dead-letter-exchange、x-deadletter-routing-key 、 x-rnax-priority 等
-</code></pre>
-</li>
+<li>消费者是竞争关系，一个消息只能被一个消费者消费</li>
+<li>任务重&#x2F;多时使用</li>
 </ol>
-<h3 id="channel-basicPublish-String-exchange-String-routingKey-AMQP-BasicProperties-props-byte-body"><a href="#channel-basicPublish-String-exchange-String-routingKey-AMQP-BasicProperties-props-byte-body" class="headerlink" title="channel.basicPublish(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body)"></a>channel.basicPublish(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body)</h3><p>basicPublish 对消息进行一些设置<br>参数解释：</p>
-<ol>
-<li>exchange： 要将消息发送到的交换器</li>
-<li>routingKey： 路由KEY</li>
-<li>props： 消息的其它属性，如：路由头等</li>
-<li>body： 消息体</li>
-</ol>
-<h3 id="channel-basicConsume-String-queue-boolean-autoAck-DeliverCallback-deliverCallback-CancelCallback-cancelCallback"><a href="#channel-basicConsume-String-queue-boolean-autoAck-DeliverCallback-deliverCallback-CancelCallback-cancelCallback" class="headerlink" title="channel.basicConsume(String queue, boolean autoAck, DeliverCallback deliverCallback, CancelCallback cancelCallback)"></a>channel.basicConsume(String queue, boolean autoAck, DeliverCallback deliverCallback, CancelCallback cancelCallback)</h3><p>参数解释：</p>
-<ol>
-<li>queue： 队列名</li>
-<li>autoAck： true 接收到传递过来的消息后acknowledged（应答服务器），false 接收到消息后不应答服务器</li>
-<li>deliverCallback： 当一个消息发送过来后的回调接口</li>
-<li>cancelCallback：当一个消费者取消订阅时的回调接口;取消消费者订阅队列时除了使用{@link Channel#basicCancel}之外的所有方式都会调用该回调方法</li>
-</ol>
-<hr>
-<h3 id="Work-Queues"><a href="#Work-Queues" class="headerlink" title="Work Queues"></a>Work Queues</h3><img src = "/images/RabbitMQ/RabbitMQ-Work-Queues.png">
-官方文档： https://www.rabbitmq.com/tutorials/tutorial-two-java.html
-1. 消费者是竞争关系，一个消息只能被一个消费者消费
-2. 任务重/多时使用
-
-<hr>
-<h3 id="Publish-Subscribe"><a href="#Publish-Subscribe" class="headerlink" title="Publish/Subscribe"></a>Publish/Subscribe</h3><img src = "/images/RabbitMQ/RabbitMQ-Publish-SubScribe.png">
-
-<p>官方文档：<a target="_blank" rel="noopener" href="https://www.rabbitmq.com/tutorials/tutorial-three-java.html">https://www.rabbitmq.com/tutorials/tutorial-three-java.html</a></p>
+<h3 id="Publish-Subscribe"><a href="#Publish-Subscribe" class="headerlink" title="Publish&#x2F;Subscribe"></a>Publish&#x2F;Subscribe</h3><p>官方文档：<a target="_blank" rel="noopener" href="https://www.rabbitmq.com/tutorials/tutorial-three-java.html">https://www.rabbitmq.com/tutorials/tutorial-three-java.html</a></p>
+<p><img src="/../images/RabbitMQ/RabbitMQ-Publish-SubScribe.png" alt="RabbitMQ-Publish-SubScribe"></p>
 <p>设置exchange 为fanout类型<br>publisher伪代码</p>
-<code>
-private static final String EXCHANGE_NAME = "logs";<br>
-//设置交换机类型为fanout<br>
-channel.exchangeDeclare(EXCHANGE_NAME, "fanout");<br>
-channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes());<br>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">EXCHANGE_NAME</span> <span class="operator">=</span> <span class="string">&quot;logs&quot;</span>;</span><br><span class="line"><span class="comment">//设置交换机类型为fanout&lt;br&gt;</span></span><br><span class="line">channel.exchangeDeclare(EXCHANGE_NAME, <span class="string">&quot;fanout&quot;</span>);</span><br><span class="line">channel.basicPublish(EXCHANGE_NAME, <span class="string">&quot;&quot;</span>, <span class="literal">null</span>, message.getBytes());</span><br></pre></td></tr></table></figure>
 
-</code>
-receive伪代码
-<code>
-String queueName = channel.queueDeclare().getQueue();<br>
-//绑定交换机和队列<br>
-channel.queueBind(queueName, EXCHANGE_NAME, "");<br>
-</code>
+<p>receive伪代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">queueName</span> <span class="operator">=</span> channel.queueDeclare().getQueue();</span><br><span class="line"><span class="comment">//绑定交换机和队列&lt;br&gt;</span></span><br><span class="line">channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">&quot;&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="Routing-路由模式"><a href="#Routing-路由模式" class="headerlink" title="Routing 路由模式"></a>Routing 路由模式</h3></h3><p>官方文档：<a target="_blank" rel="noopener" href="https://www.rabbitmq.com/tutorials/tutorial-four-java.html">https://www.rabbitmq.com/tutorials/tutorial-four-java.html</a></p>
+<img src = "/images/RabbitMQ/RabbitMQ-Routing-Model.png">
 
+<p>设置exchange direct</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.exchangeDeclare(EXCHANGE_NAME, “direct”);</span><br></pre></td></tr></table></figure>
 
-<hr>
-<h3 id="Routing-路由模式"><a href="#Routing-路由模式" class="headerlink" title="Routing 路由模式"></a>Routing 路由模式</h3><img src = "/images/RabbitMQ/RabbitMQ-Routing-Model.png">
+<h3 id="Topic-主题模式"><a href="#Topic-主题模式" class="headerlink" title="Topic 主题模式"></a>Topic 主题模式</h3><p>官方文档：<a target="_blank" rel="noopener" href="https://www.rabbitmq.com/tutorials/tutorial-five-java.html">https://www.rabbitmq.com/tutorials/tutorial-five-java.html</a></p>
+<img src = "/images/RabbitMQ/RabbitMQ-Topic-Model.png">
+通配符 *.error.#
+    *表示匹配一个单词
+    #表示匹配多个单词
 
-<p>官方文档：<a target="_blank" rel="noopener" href="https://www.rabbitmq.com/tutorials/tutorial-four-java.html">https://www.rabbitmq.com/tutorials/tutorial-four-java.html</a></p>
-<p>设置exchange direct<br>channel.exchangeDeclare(EXCHANGE_NAME, “direct”);</p>
-<hr>
-<h3 id="Topic-主题模式"><a href="#Topic-主题模式" class="headerlink" title="Topic 主题模式"></a>Topic 主题模式</h3><img src = "/images/RabbitMQ/RabbitMQ-Topic-Model.png">
+<p>设置exchange topic  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.exchangeDeclare(EXCHANGE_NAME, “topic”);</span><br></pre></td></tr></table></figure>
+<p>receive伪代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.queueBind(queueName, EXCHANGE_NAME, bindingKey);</span><br></pre></td></tr></table></figure>
 
-<p>官方文档：<a target="_blank" rel="noopener" href="https://www.rabbitmq.com/tutorials/tutorial-five-java.html">https://www.rabbitmq.com/tutorials/tutorial-five-java.html</a><br>通配符 *.error.#<br>*表示匹配一个单词<br>#表示匹配多个单词</p>
-<p>设置exchange topic<br>        channel.exchangeDeclare(EXCHANGE_NAME, “topic”);<br> receive伪代码<br>        channel.queueBind(queueName, EXCHANGE_NAME, bindingKey);</p>
-<hr>
-<h3 id="RPC远程调用模式"><a href="#RPC远程调用模式" class="headerlink" title="RPC远程调用模式"></a>RPC远程调用模式</h3><p>官方文档：<a target="_blank" rel="noopener" href="https://www.rabbitmq.com/tutorials/tutorial-six-java.html">https://www.rabbitmq.com/tutorials/tutorial-six-java.html</a></p>
-<hr>
-<h3 id="Publisher-Confirms"><a href="#Publisher-Confirms" class="headerlink" title="Publisher Confirms"></a>Publisher Confirms</h3><p>官方文档： <a target="_blank" rel="noopener" href="https://www.rabbitmq.com/tutorials/tutorial-seven-java.html">https://www.rabbitmq.com/tutorials/tutorial-seven-java.html</a></p>
-
-  </div>
-</article>
-
-
-
-        
-<pre><code>      &lt;div id=&quot;footer-post-container&quot;&gt;
-</code></pre>
-  <div id="footer-post">
-
-<pre><code>&lt;div id=&quot;nav-footer&quot; style=&quot;display: none&quot;&gt;
-  &lt;ul&gt;
-     
-      &lt;li&gt;&lt;a href=&quot;/&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
-     
-      &lt;li&gt;&lt;a href=&quot;/about/&quot;&gt;About&lt;/a&gt;&lt;/li&gt;
-     
-      &lt;li&gt;&lt;a href=&quot;/archives/&quot;&gt;Writing&lt;/a&gt;&lt;/li&gt;
-     
-      &lt;li&gt;&lt;a target=&quot;_blank&quot; rel=&quot;noopener&quot; href=&quot;http://github.com/probberechts&quot;&gt;Projects&lt;/a&gt;&lt;/li&gt;
-    
-  &lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;div id=&quot;toc-footer&quot; style=&quot;display: none&quot;&gt;
-  &lt;ol class=&quot;toc&quot;&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#AMQP-Advanced-Message-Queuing-Protocol-%E9%AB%98%E7%BA%A7%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%8D%8F%E8%AE%AE&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;1.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;AMQP(Advanced Message Queuing Protocol 高级消息队列协议)&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#%E5%8C%85%E5%90%AB%E7%B1%BB%EF%BC%9A&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;2.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;包含类：&lt;/span&gt;&lt;/a&gt;&lt;ol class=&quot;toc-child&quot;&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Connection%E7%B1%BB%EF%BC%9A&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;2.1.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Connection类：&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Channel%E7%B1%BB%EF%BC%9A&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;2.2.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Channel类：&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Exchange%E7%B1%BB&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;2.3.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Exchange类&lt;/span&gt;&lt;/a&gt;&lt;ol class=&quot;toc-child&quot;&gt;&lt;li class=&quot;toc-item toc-level-4&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Queue%E7%B1%BB&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;2.3.1.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Queue类&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;3.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;使用场景:&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#RabbitMQ-%E4%BC%98%E5%8A%BF&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;4.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;RabbitMQ 优势&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#RabbitMQ-%E5%8A%A3%E5%8A%BF&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;5.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;RabbitMQ 劣势&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#%E4%BD%BF%E7%94%A8MQ%E7%9A%84%E6%9D%A1%E4%BB%B6&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;6.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;使用MQ的条件&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#RabbitMQ-%E4%BD%BFAMQP%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%AE%9E%E7%8E%B0&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;7.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;RabbitMQ 使AMQP协议的实现&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-2&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#RabbitMQ%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;RabbitMQ的工作模式&lt;/span&gt;&lt;/a&gt;&lt;ol class=&quot;toc-child&quot;&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#%E7%AE%80%E5%8D%95%E6%A8%A1%E5%BC%8F&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.1.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;简单模式&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#channel-queueDeclare-String-queue-boolean-durable-boolean-exclusive-boolean-autoDelete-Map-lt-String-Object-gt-arguments&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.2.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;channel.queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete,Map&amp;lt;String, Object&amp;gt; arguments)&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#channel-basicPublish-String-exchange-String-routingKey-AMQP-BasicProperties-props-byte-body&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.3.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;channel.basicPublish(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body)&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#channel-basicConsume-String-queue-boolean-autoAck-DeliverCallback-deliverCallback-CancelCallback-cancelCallback&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.4.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;channel.basicConsume(String queue, boolean autoAck, DeliverCallback deliverCallback, CancelCallback cancelCallback)&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Work-Queues&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.5.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Work Queues&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Publish-Subscribe&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.6.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Publish&amp;#x2F;Subscribe&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Routing-%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.7.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Routing 路由模式&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Topic-%E4%B8%BB%E9%A2%98%E6%A8%A1%E5%BC%8F&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.8.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Topic 主题模式&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#RPC%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8%E6%A8%A1%E5%BC%8F&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.9.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;RPC远程调用模式&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;toc-item toc-level-3&quot;&gt;&lt;a class=&quot;toc-link&quot; href=&quot;#Publisher-Confirms&quot;&gt;&lt;span class=&quot;toc-number&quot;&gt;8.10.&lt;/span&gt; &lt;span class=&quot;toc-text&quot;&gt;Publisher Confirms&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;/ol&gt;
-&lt;/div&gt;
-
-&lt;div id=&quot;share-footer&quot; style=&quot;display: none&quot;&gt;
-  &lt;ul&gt;
-</code></pre>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&text=RabbitMQ基础"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&is_video=false&description=RabbitMQ基础"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=RabbitMQ基础&body=Check out this article: http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&name=RabbitMQ基础&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/05/08/RabbitMQ%E5%9F%BA%E7%A1%80/&t=RabbitMQ基础"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
-<pre><code>&lt;/div&gt;
-
-&lt;div id=&quot;actions-footer&quot;&gt;
-    &lt;a id=&quot;menu&quot; class=&quot;icon&quot; href=&quot;#&quot; onclick=&quot;$(&#39;#nav-footer&#39;).toggle();return false;&quot;&gt;&lt;i class=&quot;fas fa-bars fa-lg&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; Menu&lt;/a&gt;
-    &lt;a id=&quot;toc&quot; class=&quot;icon&quot; href=&quot;#&quot; onclick=&quot;$(&#39;#toc-footer&#39;).toggle();return false;&quot;&gt;&lt;i class=&quot;fas fa-list fa-lg&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; TOC&lt;/a&gt;
-    &lt;a id=&quot;share&quot; class=&quot;icon&quot; href=&quot;#&quot; onclick=&quot;$(&#39;#share-footer&#39;).toggle();return false;&quot;&gt;&lt;i class=&quot;fas fa-share-alt fa-lg&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; Share&lt;/a&gt;
-    &lt;a id=&quot;top&quot; style=&quot;display:none&quot; class=&quot;icon&quot; href=&quot;#&quot; onclick=&quot;$(&#39;html, body&#39;).animate(&#123; scrollTop: 0 &#125;, &#39;fast&#39;);&quot;&gt;&lt;i class=&quot;fas fa-chevron-up fa-lg&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; Top&lt;/a&gt;
-&lt;/div&gt;
-</code></pre>
-  </div>
-</div>
-
-        
-<pre><code>    &lt;footer id=&quot;footer&quot;&gt;
-</code></pre>
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-<pre><code>2016-2023
-John Doe
-</code></pre>
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
-     --><!--
-       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
-     -->
-      </ul>
-    </nav>
-  </div>
-</footer>
-
-<pre><code>&lt;/div&gt;
-&lt;!-- styles --&gt;
-</code></pre>
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
-
-
-<pre><code>&lt;!-- jquery --&gt;
-</code></pre>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
-
-
-
-
-<!-- clipboard -->
-
-<pre><code>&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js&quot; crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt; 
-</code></pre>
-  <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
-    btn += '<i class="far fa-clone"></i>';
-    btn += '</span>'; 
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
-      }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "Copied!");
-      e.clearSelection();
-    })
-  })
-  </script>
-
-
-<script src="/js/main.js"></script>
-
-<!-- search -->
-
-<!-- Google Analytics -->
-
-<!-- Baidu Analytics -->
-
-<!-- Cloudflare Analytics -->
-
-<!-- Umami Analytics -->
-
-<!-- Disqus Comments -->
-
-<!-- utterances Comments -->
-
-</body>
-</html>
+<h3 id="RPC远程调用模式"><a href="#RPC远程调用模式" class="headerlink" title="RPC远程调用模式"></a>RPC远程调用模式</h3><p>官方文档：<a target="_blank" rel="noopener" href="https://www.rabbitmq.com/tutorials/tutorial-six-java.html">https://www.rabbitmq.com/tutorials/tutorial-six-java.html</a><br>Publisher Confirms<br>官方文档：<a target="_blank" rel="noopener" href="https://www.rabbitmq.com/tutorials/tutorial-seven-java.html">https://www.rabbitmq.com/tutorials/tutorial-seven-java.html</a></p>
 
   </div>
 </article>
@@ -667,23 +639,23 @@ John Doe
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#AMQP-Advanced-Message-Queuing-Protocol-%E9%AB%98%E7%BA%A7%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.</span> <span class="toc-text">AMQP(Advanced Message Queuing Protocol 高级消息队列协议)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%85%E5%90%AB%E7%B1%BB%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">包含类：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Connection%E7%B1%BB%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">Connection类：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Channel%E7%B1%BB%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">Channel类：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exchange%E7%B1%BB"><span class="toc-number">2.3.</span> <span class="toc-text">Exchange类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Queue%E7%B1%BB"><span class="toc-number">2.3.1.</span> <span class="toc-text">Queue类</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.</span> <span class="toc-text">使用场景:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-%E4%BC%98%E5%8A%BF"><span class="toc-number">4.</span> <span class="toc-text">RabbitMQ 优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-%E5%8A%A3%E5%8A%BF"><span class="toc-number">5.</span> <span class="toc-text">RabbitMQ 劣势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8MQ%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="toc-number">6.</span> <span class="toc-text">使用MQ的条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-%E4%BD%BFAMQP%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">7.</span> <span class="toc-text">RabbitMQ 使AMQP协议的实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="toc-number">8.</span> <span class="toc-text">RabbitMQ的工作模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E6%A8%A1%E5%BC%8F"><span class="toc-number">8.1.</span> <span class="toc-text">简单模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#channel-queueDeclare-String-queue-boolean-durable-boolean-exclusive-boolean-autoDelete-Map-lt-String-Object-gt-arguments"><span class="toc-number">8.2.</span> <span class="toc-text">channel.queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete,Map&lt;String, Object&gt; arguments)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#channel-basicPublish-String-exchange-String-routingKey-AMQP-BasicProperties-props-byte-body"><span class="toc-number">8.3.</span> <span class="toc-text">channel.basicPublish(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#channel-basicConsume-String-queue-boolean-autoAck-DeliverCallback-deliverCallback-CancelCallback-cancelCallback"><span class="toc-number">8.4.</span> <span class="toc-text">channel.basicConsume(String queue, boolean autoAck, DeliverCallback deliverCallback, CancelCallback cancelCallback)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Work-Queues"><span class="toc-number">8.5.</span> <span class="toc-text">Work Queues</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Publish-Subscribe"><span class="toc-number">8.6.</span> <span class="toc-text">Publish&#x2F;Subscribe</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Routing-%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F"><span class="toc-number">8.7.</span> <span class="toc-text">Routing 路由模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Topic-%E4%B8%BB%E9%A2%98%E6%A8%A1%E5%BC%8F"><span class="toc-number">8.8.</span> <span class="toc-text">Topic 主题模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RPC%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">8.9.</span> <span class="toc-text">RPC远程调用模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Publisher-Confirms"><span class="toc-number">8.10.</span> <span class="toc-text">Publisher Confirms</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">RabbitMQ基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AMQP-Advanced-Message-Queuing-Protocol-%E9%AB%98%E7%BA%A7%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.1.</span> <span class="toc-text">AMQP(Advanced Message Queuing Protocol 高级消息队列协议)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">2.</span> <span class="toc-text">使用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-%E4%BC%98%E5%8A%BF"><span class="toc-number">3.</span> <span class="toc-text">RabbitMQ 优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-%E5%8A%A3%E5%8A%BF"><span class="toc-number">4.</span> <span class="toc-text">RabbitMQ 劣势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8MQ%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="toc-number">5.</span> <span class="toc-text">使用MQ的条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-%E6%98%AFAMQP%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">6.</span> <span class="toc-text">RabbitMQ 是AMQP协议的实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="toc-number">7.</span> <span class="toc-text">RabbitMQ的工作模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#channel-queueDeclare-String-queue-boolean-durable-boolean-exclusive-boolean-autoDelete-Map-String-Object-arguments"><span class="toc-number">7.1.</span> <span class="toc-text">channel.queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete,Map String, Object arguments)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#channel-basicPublish-String-exchange-String-routingKey-AMQP-BasicProperties-props-byte-body"><span class="toc-number">7.2.</span> <span class="toc-text">channel.basicPublish(String exchange, String routingKey, AMQP.BasicProperties props, byte[] body)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#channel-basicConsume-String-queue-boolean-autoAck-DeliverCallback-deliverCallback-CancelCallback-cancelCallback"><span class="toc-number">7.3.</span> <span class="toc-text">channel.basicConsume(String queue, boolean autoAck, DeliverCallback deliverCallback, CancelCallback cancelCallback)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Work-Queues"><span class="toc-number">7.4.</span> <span class="toc-text">Work Queues</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Publish-Subscribe"><span class="toc-number">7.5.</span> <span class="toc-text">Publish&#x2F;Subscribe</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Routing-%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F"><span class="toc-number">7.6.</span> <span class="toc-text">Routing 路由模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Topic-%E4%B8%BB%E9%A2%98%E6%A8%A1%E5%BC%8F"><span class="toc-number">7.7.</span> <span class="toc-text">Topic 主题模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RPC%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">7.8.</span> <span class="toc-text">RPC远程调用模式</span></a></li></ol></li></ol>
       </div>
     
 
     <div id="share-footer" style="display: none">
       <ul>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&text="><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title="><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&is_video=false&description="><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=&body=Check out this article: http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title="><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title="><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title="><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title="><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&name=&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&t="><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&text=RabbitMQ基础"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&is_video=false&description=RabbitMQ基础"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RabbitMQ基础&body=Check out this article: http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&title=RabbitMQ基础"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&name=RabbitMQ基础&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/09/06/RabbitMQ%E5%9F%BA%E7%A1%80/&t=RabbitMQ基础"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>

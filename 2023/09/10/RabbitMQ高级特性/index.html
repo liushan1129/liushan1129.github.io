@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="回顾：  在RabbitMQ初识中了解到  RabbitMQ 是一个由Erlang语言开发的AMQP协议的开源实现，能够实现异步消息处理。是一个消息代理，接收和转发消息。 AMQP(Advanced Message Queue Protocol 高级消息队列协议) 有一个AMQ Model(包含 Exchange，Message Queue, binding),rabbitMQ就是这个model的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RabbitMQ高级特性">
+<meta property="og:url" content="http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="回顾：  在RabbitMQ初识中了解到  RabbitMQ 是一个由Erlang语言开发的AMQP协议的开源实现，能够实现异步消息处理。是一个消息代理，接收和转发消息。 AMQP(Advanced Message Queue Protocol 高级消息队列协议) 有一个AMQ Model(包含 Exchange，Message Queue, binding),rabbitMQ就是这个model的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-producerLoseMsg-transaction.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-producerLoseMsg-confirm-yml.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-producerLoseMsg-confirm-implement.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-producerLoseMsg-confirm-setcallback.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-mqLoseMsg-setqueue-persistent.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-mqLoseMsg-setdeliveryMode-persistent.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-consumerLoseMsg-set-yml.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-consumerLoseMsg-manual-ack.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-%E8%A1%A5%E5%81%BF%E6%9C%BA%E5%88%B6.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-1queueToNconsumer-problem.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-1queueTo1consumer-multiThread-problem.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-consumer-inOrder-problem-solution1.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/RabbitMQ-consumer-inOrder-problem-solution2.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/kafka-consume-order-problem.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/kafka-consume-order-problem2.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/kafka-consume-inOrder-problem-solution1.png">
+<meta property="og:image" content="http://example.com/images/RabbitMQ/kafka-consume-inOrder-problem-solution2.png">
+<meta property="article:published_time" content="2023-09-10T15:56:16.000Z">
+<meta property="article:modified_time" content="2023-09-10T16:53:41.701Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/RabbitMQ/RabbitMQ-producerLoseMsg-transaction.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>RabbitMQ高级特性</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/09/07/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E5%85%B3%E9%94%AE%E5%AD%97%E6%95%B4%E7%90%86/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&text=RabbitMQ高级特性"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&title=RabbitMQ高级特性"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&is_video=false&description=RabbitMQ高级特性"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RabbitMQ高级特性&body=Check out this article: http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&title=RabbitMQ高级特性"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&title=RabbitMQ高级特性"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&title=RabbitMQ高级特性"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&title=RabbitMQ高级特性"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&name=RabbitMQ高级特性&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&t=RabbitMQ高级特性"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9E%E9%A1%BE%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">回顾：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7"><span class="toc-number">2.</span> <span class="toc-text">RabbitMQ 高级特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%B6%88%E6%81%AF%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7-%E3%80%90producer-Broker%E3%80%91"><span class="toc-number">2.1.</span> <span class="toc-text">1. 消息的可靠性 【producer -&gt; Broker】</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Consumer-ACK-%E3%80%90Broker-consumer%E3%80%91"><span class="toc-number">2.2.</span> <span class="toc-text">2. Consumer ACK 【Broker -&gt; consumer】</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%B6%88%E8%B4%B9%E7%AB%AF%E9%99%90%E6%B5%81-%E3%80%90%E6%B6%88%E8%B4%B9%E7%AB%AF%E5%A4%84%E7%90%86%E6%B6%88%E6%81%AF%E7%9A%84%E9%80%9F%E7%8E%87%E3%80%91"><span class="toc-number">2.3.</span> <span class="toc-text">3. 消费端限流 【消费端处理消息的速率】</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-TTL-%E3%80%90%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4%E3%80%91"><span class="toc-number">2.4.</span> <span class="toc-text">4. TTL 【过期时间】</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97"><span class="toc-number">2.5.</span> <span class="toc-text">5. 死信队列</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BC%9A%E6%88%90%E4%B8%BA%E6%AD%BB%E4%BF%A1%E6%B6%88%E6%81%AF%E5%91%A2%EF%BC%9F"><span class="toc-number">2.5.1.</span> <span class="toc-text">消息什么时候会成为死信消息呢？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%BB%91%E5%AE%9A%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97%EF%BC%9F"><span class="toc-number">2.5.2.</span> <span class="toc-text">如何绑定死信队列？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97-%E3%80%90RabbitMQ%E6%B2%A1%E6%9C%89%E6%8F%90%E4%BE%9B%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97%EF%BC%8C%E9%9C%80%E8%A6%81%E4%BD%BF%E7%94%A8TTL-%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97-%E5%AE%9E%E7%8E%B0%E3%80%91"><span class="toc-number">2.6.</span> <span class="toc-text">6. 延迟队列 【RabbitMQ没有提供延迟队列，需要使用TTL+死信队列 实现】</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E6%97%A5%E5%BF%97%E4%B8%8E%E7%9B%91%E6%8E%A7"><span class="toc-number">2.7.</span> <span class="toc-text">7. 日志与监控</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E9%97%AE%E9%A2%98"><span class="toc-number">3.</span> <span class="toc-text">应用问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E5%B9%82%E7%AD%89%E6%80%A7"><span class="toc-number">3.1.</span> <span class="toc-text">消息幂等性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E5%8F%AF%E9%9D%A0%E6%80%A7%E4%BF%9D%E9%9A%9C"><span class="toc-number">3.2.</span> <span class="toc-text">消息可靠性保障</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%9D%E9%9A%9C%E6%B6%88%E6%81%AF%E5%8F%AF%E9%9D%A0%E6%80%A7-%E2%80%94-%E8%A1%A5%E5%81%BF%E6%9C%BA%E5%88%B6"><span class="toc-number">4.</span> <span class="toc-text">保障消息可靠性 — 补偿机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E9%A1%BA%E5%BA%8F%E6%89%A7%E8%A1%8C%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">如何保证消息顺序执行？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%A1%BA%E5%BA%8F%E9%94%99%E4%B9%B1%EF%BC%9F"><span class="toc-number">5.1.</span> <span class="toc-text">什么是顺序错乱？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RabbitMQ%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E7%9A%84%E6%B6%88%E8%B4%B9%E9%A1%BA%E5%BA%8F"><span class="toc-number">5.2.</span> <span class="toc-text">RabbitMQ如何保证消息的消费顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%93%E5%B1%95-kafka%E9%A1%BA%E5%BA%8F%E9%94%99%E4%B9%B1%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="toc-number">5.3.</span> <span class="toc-text">拓展 kafka顺序错乱的场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%93%E5%B1%95-kafka%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E7%9A%84%E6%B6%88%E8%B4%B9%E9%A1%BA%E5%BA%8F"><span class="toc-number">5.4.</span> <span class="toc-text">拓展 kafka如何保证消息的消费顺序</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        RabbitMQ高级特性
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-09-10T15:56:16.000Z" class="dt-published" itemprop="datePublished">2023-09-10</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="回顾："><a href="#回顾：" class="headerlink" title="回顾："></a>回顾：</h2><font style="color: yellowgreen;">
+
+<p>在RabbitMQ初识中了解到</p>
+<ol>
+<li>RabbitMQ 是一个由Erlang语言开发的AMQP协议的开源实现，能够实现异步消息处理。是一个消息代理，接收和转发消息。</li>
+<li>AMQP(Advanced Message Queue Protocol 高级消息队列协议) 有一个AMQ Model(包含 Exchange，Message Queue, binding),rabbitMQ就是这个model的一个实现</li>
+<li>rabbitMQ 的exchange有三种类型 direct(point-to-point)，topic(publish-subscribe), fanout(mulitcast), headers</li>
+<li>RabbitMQ的工作模式有：简单模式(不使用exchange)，work queue(不使用exchange), publish&#x2F;subscribe(exchange &#x3D; fanout), routing(exchange &#x3D; direct), topic(exchange &#x3D; topic), RPC, publisher confirms</li>
+<li>MQ优势：<br>1、应用解耦，提高系统的容错性和可维护性<br>2、异步提速，提升用户体验和系统吞吐量<br>3、削峰填谷，提高系统稳定性</li>
+<li>MQ劣势：<br>1、系统可用性降低， MQ挂掉会影响整个系统的使用<br>2、系统复杂度提高，由之前的同步调用转为异步调用<br>3、一致性问题，某一方消息消费失败会造成数据不一致问题</li>
+</ol>
+</font>
+
+<h2 id="RabbitMQ-高级特性"><a href="#RabbitMQ-高级特性" class="headerlink" title="RabbitMQ 高级特性"></a>RabbitMQ 高级特性</h2><p>消息的可靠性 【producer -&gt; Broker】<br>Consumer ACK 【Broker -&gt; consumer】<br>消费端限流 【消费端处理消息的速率】<br>TTL 【过期时间】<br>死信队列<br>延迟队列 【RabbitMQ没有提供延迟队列，需要使用TTL+死信队列 实现】<br>日志与监控<br>消息可靠性分析与追踪<br>管理 【权限&#x2F;角色等】</p>
+<h3 id="1-消息的可靠性-【producer-Broker】"><a href="#1-消息的可靠性-【producer-Broker】" class="headerlink" title="1. 消息的可靠性 【producer -&gt; Broker】"></a>1. 消息的可靠性 【producer -&gt; Broker】</h3><p>以防消息传递过程中消息丢失造成消息没有发送到mq</p>
+<p>生产者到queue 控制消息投递可靠性有两种模式<br>1、confirm模式（确认模式）[publisher —&gt; exchange， exchange收到消息后调用confirmCallback回调函数告诉生成者]<br>    开启确认模式: publisher-confirms &#x3D; “true”<br>    在rabbitTemplate 定义 confirmCallback回调函数<br>    rabbitmq.setConfirmCallback(….);<br>2、return模式（退回模式）[exchange —&gt; queue, 消息没有路由到queue，调用returnCallback回调函数告诉消息发送方]<br>    开启回退模式 ， 设置returnCallBack : publisher-returns &#x3D; “true”<br>    设置exchange处理消息的模式， 默认是如果消息没有路由到queue则直接丢弃消息；如果开始回退模式，如果消息没有路由到queue,会返回给消息发送方returnCallBack()<br>    rabbitmq.setReturnCallback(….);</p>
+<h3 id="2-Consumer-ACK-【Broker-consumer】"><a href="#2-Consumer-ACK-【Broker-consumer】" class="headerlink" title="2. Consumer ACK 【Broker -&gt; consumer】"></a>2. Consumer ACK 【Broker -&gt; consumer】</h3><p>RabbitMQ中有一个ACK机制，默认情况下消费者接收到到消息，RabbitMQ会自动提交ACK，之后这条消息就不会再发送给消费者了。<br>以防消息在消费过程中丢失，造成消息没有被消费</p>
+<p>消费端收到消息后的确认方式<br>1、自动确认： acknowledge &#x3D; “none”(默认)<br>2、手动确认： acknowledge &#x3D; “manual”, 调用channel.basicAck(),手动签收，出现异常则调用channel.basicNack()方法，让其自动重新发消息<br>     设置手动确认： acknowledge &#x3D; “manual”<br>     让监听器实现 channelAwareMessageListener接口<br>     消息处理成功，则调用channel的basicAck()签收，消息处理失败，则调用Channel的basicNack()拒收，broker重发消息给consumer<br>3、根据异常情况确认： acknowledge &#x3D; “auto”</p>
+<h3 id="3-消费端限流-【消费端处理消息的速率】"><a href="#3-消费端限流-【消费端处理消息的速率】" class="headerlink" title="3. 消费端限流 【消费端处理消息的速率】"></a>3. 消费端限流 【消费端处理消息的速率】</h3><p>1、确保ack机制是手动确认， acknowledge &#x3D; “manual”<br>2、listener-container 配置属性 perfetch &#x3D; 1 表示消费端每次从mq拉取一条消息，直到手动确认消息消费完毕后才会继续拉取下一条<br>通过perfetch限制每次消费条数达到限流效果。如果不设置会一次性全部拉取</p>
+<h3 id="4-TTL-【过期时间】"><a href="#4-TTL-【过期时间】" class="headerlink" title="4. TTL 【过期时间】"></a>4. TTL 【过期时间】</h3><p>Time To Live 存活时间<br>当消息到达存活时间后还没有被消息会自动清除<br>可以对单条消息message设置存活时间 expiration<br>也可以对整个队列queue设置存活时间 x-message-ttl<br>如果同时对 message和queue设置了ttl，时间短的生效</p>
+<h3 id="5-死信队列"><a href="#5-死信队列" class="headerlink" title="5. 死信队列"></a>5. 死信队列</h3><p>DLX(Dead Letter Exchange)，又名死信交换机</p>
+<h4 id="消息什么时候会成为死信消息呢？"><a href="#消息什么时候会成为死信消息呢？" class="headerlink" title="消息什么时候会成为死信消息呢？"></a>消息什么时候会成为死信消息呢？</h4><p>1、队列消息长度达到限制之后，比如消息长度限制是10条，那第11条及以后的消息都是死信消息<br>2、消费者拒收的消息，requeue &#x3D; false 时basicNack()或basicReject()并不会把这条被拒的消息放回到原消息队列中<br>3、原队列存在消息过期设置，消息达到超时时间未被消费，此条消息也会成为死信消息</p>
+<h4 id="如何绑定死信队列？"><a href="#如何绑定死信队列？" class="headerlink" title="如何绑定死信队列？"></a>如何绑定死信队列？</h4><p>通过设置 x-dead-letter-exchange 和 x-dead-letter-routing-key</p>
+<h3 id="6-延迟队列-【RabbitMQ没有提供延迟队列，需要使用TTL-死信队列-实现】"><a href="#6-延迟队列-【RabbitMQ没有提供延迟队列，需要使用TTL-死信队列-实现】" class="headerlink" title="6. 延迟队列 【RabbitMQ没有提供延迟队列，需要使用TTL+死信队列 实现】"></a>6. 延迟队列 【RabbitMQ没有提供延迟队列，需要使用TTL+死信队列 实现】</h3><p>延迟队列，是消息不会被立即消费，只有达到指定时间后才会被消费。<br>使用场景：<br>1、下单后30分钟未支付，取消订单，回滚库存<br>2、新用户注册7天后发短信问候<br>等</p>
+<p>实现方式：<br>方法一：可以使用定时任务，隔一段时间扫描一下，统一处理，不太优雅，扫描时间设定不合理会存在时间误差问题<br>方法二：使用延迟队列给队列设置ttl,超过时间之后放入到死信队列DLX中，再绑定到queue,只需要监听私信队列，如果有消息就去拉取做判断然后处理即可</p>
+<h3 id="7-日志与监控"><a href="#7-日志与监控" class="headerlink" title="7. 日志与监控"></a>7. 日志与监控</h3><p> 在GUI界面使用 rabbitmq-tracing 或者 firehose<br> 启用插件命令： rabbitmq-plugins enable rabbitmq-tracing </p><br><font style="color:red">值得注意的是 开启后mq的性能会受影响，所以用完注意关闭！！！！</font></p>
+<h2 id="应用问题"><a href="#应用问题" class="headerlink" title="应用问题"></a>应用问题</h2><h3 id="消息幂等性"><a href="#消息幂等性" class="headerlink" title="消息幂等性"></a>消息幂等性</h3><p> 幂等性： 一次和多次请求某资源，对于资源本身应该具有同样的结果。即任意多次执行对资源本身所产生的影响均与一次执行产生的影响相同。</p>
+<p> MQ中的幂等性： 消费多条相同的消息得到的结果与消费一次该条消息得到的结果是相同的。 比如 消费了两条账户扣款500元的消息，此时账户应该扣款500 而不是1000</p>
+<p> 什么时候可能会出现幂等性问题（消息重复消费问题）？<br> 情况1：生产者把消息发送给mq了，mq成功接收后给生产者返回ack的时候网断了，此时生产者没有收到确认信息可能会认为没有发送成功，在网络恢复后又重新发送同一条消息给mq</p>
+<p>情况2：消费者在消费消息的时候，mq将消息发送给消费者，消费者消费完后返回ack给mq，此时网络中断会导致mq收不到确认信息，mq认为消息未消费成功，可能会将该条消息发送给其他消费者或者等网络恢复后重新发送给该消费者，造成消息的重复消费</p>
+<p>如何保障消息的幂等性呢？保证消息不被重复消费？<br> 方法一：使用乐观锁机制，添加一个版本号，在每次更新时根据id和版本号判断，update 后version + 1 （更新的时候对比数据库中该条数据的版本号与读取时的版本号是否相等，相等则说明没有被修改过，可以update，不等说明被修改过不能update)<br> 方法二：生成一个全局唯一与业务无关的id，插入时唯一键重复不会被insert成功<br> 方法三：结合redis使用，redis set 命令如果数据已存在会覆盖旧值</p>
+<h3 id="消息可靠性保障"><a href="#消息可靠性保障" class="headerlink" title="消息可靠性保障"></a>消息可靠性保障</h3><p>消息丢失的三种情况：<br><font style="color: orange;">1、生产者弄丢消息</font>：生产者在将数据发送到MQ的时候，可能由于网络等原因造成消息投递失<br><font style="color: orange;">2、mq自身弄丢消息</font>：未开启RabbitMQ的持久化，数据存储于内存，服务挂掉后队列数据丢失；开启了RabbitMQ持久化，消息写入后会持久化到磁盘，但是在落盘的时候挂掉了，不过这种概率很小<br><font style="color: orange;">3、消费者弄丢消息</font>：消费者刚接收到消息还没处理完成，结果消费者挂掉了</p>
+<p><font style="color: orange;"> 1、生产者弄丢消息解决办法有两种：</font><br>方法一：生产者在发送数据前开启RabbitMQ事务(同步)该方法因为采用了事务机制，会导致吞吐量下降，特别消耗性能<br><img src="/images/RabbitMQ/RabbitMQ-producerLoseMsg-transaction.png" alt="生产者丢失消息--开启事务"><br>方法二：开启confirm模式（异步）开篇有提到publisher 到 queue保障消息可靠性的方法</p>
+<font style="color: yellowgreen;">
+
+<pre><code>回顾一下：  
+publisher —&gt; exchange: confirm模式(确认模式) exchange接收到消息后调用confirmCallback告知生产者
+exchange —&gt; queue: return模式(退回模式) 消息没有路由到queue 调用 returnCallback告知mq 
+</code></pre>
+</font>
+
+<p>如果使用的是springboot，需要在application.yml中添加<br><img src="/images/RabbitMQ/RabbitMQ-producerLoseMsg-confirm-yml.png" alt="生产者丢失消息--confirm yml配置"><br>实现confirm回调接口<br><img src="/images/RabbitMQ/RabbitMQ-producerLoseMsg-confirm-implement.png" alt="生产者丢失消息--confirm实现回调接口"><br>生产者发送消息是设置confirm回调<br><img src="/images/RabbitMQ/RabbitMQ-producerLoseMsg-confirm-setcallback.png" alt="生产者丢失消息--confirm设置回调接口"></p>
+<p><font style="color: orange;">2、MQ自身丢失消息解决办法：</font><br>创建queue时设置为持久化队列，可以保证RabbitMQ持久化queue的元数据，此时还是不会持久化queue里的数据。<br><img src="/images/RabbitMQ/RabbitMQ-mqLoseMsg-setqueue-persistent.png" alt="MQ丢失消息--设置队列为持久化队列"></p>
+<p>发送消息时将消息的deliveryMode设置为持久化，此时queue中的消息才会持久化到磁盘。</p>
+<img src="/images/RabbitMQ/RabbitMQ-mqLoseMsg-setdeliveryMode-persistent.png" alt="MQ丢失消息--设置deliveryMode为持久化">
+
+<p>同时设置queue和message持久化以后，RabbitMQ挂了再次重启会从磁盘上重启恢复queue,恢复这个queue 里的数据，保证数据不会丢失。<br>需要考虑到的是 即使开启了持久化，也可能会出现在消息在落盘时服务器挂掉的情况，导致消息根本没有进入到queue，可以考虑结合生产者confirm机制处理。持久化机制开启后，消息只有成功落盘时才会通过confirm回调通知生产者，可以看做生产者在生产消息时维护的是一个正在等待消息发送确认的队列，如果超过一定时间没有从confirm中收到返回则自动重发</p>
+<p><font style="color: orange;">3、消费者弄丢消息解决办法：</font><br>开篇有提到Consumer ACK机制,其实可以解决此问题<br><font style="color: yellowgreen;"></p>
+<pre><code>queue —&gt; consumer: 首先保证mq确认机制是手动确认机制 acknowledge = “manual”，
+监听器监听 ChannelAwareMessageListener接口， 
+消息处理成功，则调用channel.basicAck()方法， 
+消息处理失败则调用channel.basicNack()或 channel.reject()方法拒收
+</code></pre>
+</font>
+
+<p>RabbitMQ的 ack机制，在默认情况下，消费者接收到消息之后，RabbitMQ会自动提交ACK,之后这条消息就不会再发送给消费者了。<br>可以将这个ack的提交方式改为手动提交，每次处理完消息后，手动ack一下。</p>
+<p>值得注意的是，可能会出现刚处理完消息还没有来得及手动ack消费者挂了，会导致mq以为消费者没有消费成功，重新发送此消息，造成消息的重复消费，不过只要保证消息的幂等性，重复消费也不会造成问题。</p>
+<p>在springboot中修改application.yml配置文件更改为手动ack模式<br><img src="/images/RabbitMQ/RabbitMQ-consumerLoseMsg-set-yml.png" alt="消费者丢失消息--设置ack为manual"><br>消费端手动ack参考代码<br><img src="/images/RabbitMQ/RabbitMQ-consumerLoseMsg-manual-ack.png" alt="消费者丢失消息--手动ack"></p>
+<p>参考：<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/zw791029369/article/details/109561457">https://blog.csdn.net/zw791029369/article/details/109561457</a></p>
+<h2 id="保障消息可靠性-—-补偿机制"><a href="#保障消息可靠性-—-补偿机制" class="headerlink" title="保障消息可靠性 — 补偿机制"></a>保障消息可靠性 — 补偿机制</h2><img src="/images/RabbitMQ/RabbitMQ-%E8%A1%A5%E5%81%BF%E6%9C%BA%E5%88%B6.png" alt="补偿机制">
+<ol>
+<li>生产方先将业务数据入库 DB</li>
+<li>发送消息给 mq 的queue1</li>
+<li>过一段时间在发送同样的一条消息给mq queue3(发送延迟消息)</li>
+<li>consumer 监听queue1，如果queue1有消息则拉取消费</li>
+<li>consumer消费消息后再发一条确认消息给发送给 mq queue2</li>
+<li>回调检查服务监听确认消息queue2 </li>
+<li>监听到queue2有消息则将消息写入到mq的数据库MDB</li>
+<li>回调检查服务同事监听延迟消息队列 queue3 </li>
+<li>将queue3的消息与MDB中的消息对比，如果MDB中有该条消息说明消息已被消费，不做任何处理，如果MDB中没有该条消息说明消费失败，根据业务需求判断是否需要生产者重发消息，需要则调方法重新发送</li>
+<li>定时器<br>使用一个定时任务定时检查业务数据库和MDB中的数据是否一致，在延迟消息和正常发送消息都失败的情况下做兜底方案，如果发现不一致，则调生产者方法重新发送</li>
+</ol>
+<hr>
+
+<h2 id="如何保证消息顺序执行？"><a href="#如何保证消息顺序执行？" class="headerlink" title="如何保证消息顺序执行？"></a>如何保证消息顺序执行？</h2><h3 id="什么是顺序错乱？"><a href="#什么是顺序错乱？" class="headerlink" title="什么是顺序错乱？"></a>什么是顺序错乱？</h3><p>在 mysql 里增删改一条数据，对应出来了增删改 3 条 binlog 日志，接着这三条 binlog 发送到 MQ 里面，再消费出来依次执行，起码得保证人家是按照顺序来的吧？不然本来是：增加、修改、删除；你楞是换了顺序给执行成删除、修改、增加，不全错了么。</p>
+<p>RabbitMQ顺序错乱的场景</p>
+<p>场景一：一个queue 多个consumer消费会造成乱序。consumer从mq读取数据是有序的，但每个consumer的执行时间是不确定的，无法保证先读到消息的consumer一定会先完成操作，就会出现消息没有按顺序执行，造成数据顺序错误。<br><img src="/images/RabbitMQ/RabbitMQ-1queueToNconsumer-problem.png" alt="RabbitMQ乱序执行场景1"></p>
+<p>场景二：一个queue对应一个consumer, consumer里面进行了多线程消费，无法保证那个线程先完成操作，所以也会存在乱序执行问题<br><img src="/images/RabbitMQ/RabbitMQ-1queueTo1consumer-multiThread-problem.png" alt="RabbitMQ乱序执行场景2"></p>
+<h3 id="RabbitMQ如何保证消息的消费顺序"><a href="#RabbitMQ如何保证消息的消费顺序" class="headerlink" title="RabbitMQ如何保证消息的消费顺序"></a>RabbitMQ如何保证消息的消费顺序</h3><p>方法一：拆分多个queue，每个queue对应一个consumer，会多一些queue，同时可能会造成吞吐量下降<br><img src="/images/RabbitMQ/RabbitMQ-consumer-inOrder-problem-solution1.png" alt="RabbitMQ保证消息顺序消费方法1"></p>
+<p>方法二：一个queue但是对应一个consumer，然后这个consumer内部用内存队列做排队，然后分发给底层不同的worker来处理<br><img src="/images/RabbitMQ/RabbitMQ-consumer-inOrder-problem-solution2.png" alt="RabbitMQ保证消息顺序消费方法2"></p>
+<h3 id="拓展-kafka顺序错乱的场景"><a href="#拓展-kafka顺序错乱的场景" class="headerlink" title="拓展 kafka顺序错乱的场景"></a>拓展 kafka顺序错乱的场景</h3><p>场景一： kafka一个topic，一个partition，一个consumer，但是consumer内部进行多线程消费，这样数据也会出现顺序错乱问题。<br><img src="/images/RabbitMQ/kafka-consume-order-problem.png" alt="kafka乱序执行场景1"></p>
+<p>场景二：具有顺序的数据写入到了不同的partition里面，不同的消费者去消费，但是每个consumer的执行时间是不固定的，无法保证先读到消息的consumer一定先完成操作，就会出现消息没有按顺序执行，造成数据顺序错误。<br><img src="/images/RabbitMQ/kafka-consume-order-problem2.png" alt="kafka乱序执行场景2"></p>
+<h3 id="拓展-kafka如何保证消息的消费顺序"><a href="#拓展-kafka如何保证消息的消费顺序" class="headerlink" title="拓展 kafka如何保证消息的消费顺序"></a>拓展 kafka如何保证消息的消费顺序</h3><p>方法一：确保同一个消息发送到同一个partition，一个topic，一个partition，一个consumer，内部单线程消费。单线程吞吐量太低，一般不会用这个.<br><img src="/images/RabbitMQ/kafka-consume-inOrder-problem-solution1.png" alt="kafka保证消息顺序执行方法1"></p>
+<p>方法二：写 N 个内存 queue，具有相同 key 的数据都到同一个内存 queue；然后对于 N 个线程，每个线程分别消费一个内存 queue 即可，这样就能保证顺序性。<br><img src="/images/RabbitMQ/kafka-consume-inOrder-problem-solution2.png" alt="kafka保证消息顺序执行方法2"></p></p>
+<p>参考：<br><a target="_blank" rel="noopener" href="https://gitee.com/shishan100/Java-Interview-Advanced/blob/master/docs/high-concurrency/how-to-ensure-the-order-of-messages.md#kafka">https://gitee.com/shishan100/Java-Interview-Advanced/blob/master/docs/high-concurrency/how-to-ensure-the-order-of-messages.md#kafka</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/-wenli/p/13047059.html">https://www.cnblogs.com/-wenli/p/13047059.html</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9E%E9%A1%BE%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">回顾：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7"><span class="toc-number">2.</span> <span class="toc-text">RabbitMQ 高级特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%B6%88%E6%81%AF%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7-%E3%80%90producer-Broker%E3%80%91"><span class="toc-number">2.1.</span> <span class="toc-text">1. 消息的可靠性 【producer -&gt; Broker】</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Consumer-ACK-%E3%80%90Broker-consumer%E3%80%91"><span class="toc-number">2.2.</span> <span class="toc-text">2. Consumer ACK 【Broker -&gt; consumer】</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%B6%88%E8%B4%B9%E7%AB%AF%E9%99%90%E6%B5%81-%E3%80%90%E6%B6%88%E8%B4%B9%E7%AB%AF%E5%A4%84%E7%90%86%E6%B6%88%E6%81%AF%E7%9A%84%E9%80%9F%E7%8E%87%E3%80%91"><span class="toc-number">2.3.</span> <span class="toc-text">3. 消费端限流 【消费端处理消息的速率】</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-TTL-%E3%80%90%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4%E3%80%91"><span class="toc-number">2.4.</span> <span class="toc-text">4. TTL 【过期时间】</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97"><span class="toc-number">2.5.</span> <span class="toc-text">5. 死信队列</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BC%9A%E6%88%90%E4%B8%BA%E6%AD%BB%E4%BF%A1%E6%B6%88%E6%81%AF%E5%91%A2%EF%BC%9F"><span class="toc-number">2.5.1.</span> <span class="toc-text">消息什么时候会成为死信消息呢？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%BB%91%E5%AE%9A%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97%EF%BC%9F"><span class="toc-number">2.5.2.</span> <span class="toc-text">如何绑定死信队列？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97-%E3%80%90RabbitMQ%E6%B2%A1%E6%9C%89%E6%8F%90%E4%BE%9B%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97%EF%BC%8C%E9%9C%80%E8%A6%81%E4%BD%BF%E7%94%A8TTL-%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97-%E5%AE%9E%E7%8E%B0%E3%80%91"><span class="toc-number">2.6.</span> <span class="toc-text">6. 延迟队列 【RabbitMQ没有提供延迟队列，需要使用TTL+死信队列 实现】</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E6%97%A5%E5%BF%97%E4%B8%8E%E7%9B%91%E6%8E%A7"><span class="toc-number">2.7.</span> <span class="toc-text">7. 日志与监控</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E9%97%AE%E9%A2%98"><span class="toc-number">3.</span> <span class="toc-text">应用问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E5%B9%82%E7%AD%89%E6%80%A7"><span class="toc-number">3.1.</span> <span class="toc-text">消息幂等性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E5%8F%AF%E9%9D%A0%E6%80%A7%E4%BF%9D%E9%9A%9C"><span class="toc-number">3.2.</span> <span class="toc-text">消息可靠性保障</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%9D%E9%9A%9C%E6%B6%88%E6%81%AF%E5%8F%AF%E9%9D%A0%E6%80%A7-%E2%80%94-%E8%A1%A5%E5%81%BF%E6%9C%BA%E5%88%B6"><span class="toc-number">4.</span> <span class="toc-text">保障消息可靠性 — 补偿机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E9%A1%BA%E5%BA%8F%E6%89%A7%E8%A1%8C%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">如何保证消息顺序执行？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%A1%BA%E5%BA%8F%E9%94%99%E4%B9%B1%EF%BC%9F"><span class="toc-number">5.1.</span> <span class="toc-text">什么是顺序错乱？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RabbitMQ%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E7%9A%84%E6%B6%88%E8%B4%B9%E9%A1%BA%E5%BA%8F"><span class="toc-number">5.2.</span> <span class="toc-text">RabbitMQ如何保证消息的消费顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%93%E5%B1%95-kafka%E9%A1%BA%E5%BA%8F%E9%94%99%E4%B9%B1%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="toc-number">5.3.</span> <span class="toc-text">拓展 kafka顺序错乱的场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%93%E5%B1%95-kafka%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E7%9A%84%E6%B6%88%E8%B4%B9%E9%A1%BA%E5%BA%8F"><span class="toc-number">5.4.</span> <span class="toc-text">拓展 kafka如何保证消息的消费顺序</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&text=RabbitMQ高级特性"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&title=RabbitMQ高级特性"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&is_video=false&description=RabbitMQ高级特性"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RabbitMQ高级特性&body=Check out this article: http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&title=RabbitMQ高级特性"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&title=RabbitMQ高级特性"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&title=RabbitMQ高级特性"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&title=RabbitMQ高级特性"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&name=RabbitMQ高级特性&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/09/10/RabbitMQ%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/&t=RabbitMQ高级特性"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

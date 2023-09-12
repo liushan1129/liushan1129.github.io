@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="当用于运行情况、响应情况异常时，会直接表现为系统的指标异常，而指标需要通过相关的系统指令来获取。 Linux下常用诊断工具uptime快速查看服务器的负载情况 返回系统的平均负荷，包括1min, 5min, 15min内可以运行的任务平均数，包括正在运行的任务以及虽然可以运行但正在等待某个处理器空闲的任务。 如果1min平均负载很高，而15min的平均负载很低，说明服务器正在面临高负载情况，需要进">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA-Linux系统常用诊断工具">
+<meta property="og:url" content="http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="当用于运行情况、响应情况异常时，会直接表现为系统的指标异常，而指标需要通过相关的系统指令来获取。 Linux下常用诊断工具uptime快速查看服务器的负载情况 返回系统的平均负荷，包括1min, 5min, 15min内可以运行的任务平均数，包括正在运行的任务以及虽然可以运行但正在等待某个处理器空闲的任务。 如果1min平均负载很高，而15min的平均负载很低，说明服务器正在面临高负载情况，需要进">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-09-12T11:02:13.000Z">
+<meta property="article:modified_time" content="2023-09-12T14:47:05.537Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>JAVA-Linux系统常用诊断工具</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/09/12/JAVA%E9%9D%A2%E8%AF%95%E8%AE%B2%E4%B9%89-%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%AD%E7%9A%84%E9%99%B7%E9%98%B1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&text=JAVA-Linux系统常用诊断工具"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&title=JAVA-Linux系统常用诊断工具"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&is_video=false&description=JAVA-Linux系统常用诊断工具"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JAVA-Linux系统常用诊断工具&body=Check out this article: http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&title=JAVA-Linux系统常用诊断工具"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&title=JAVA-Linux系统常用诊断工具"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&title=JAVA-Linux系统常用诊断工具"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&title=JAVA-Linux系统常用诊断工具"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&name=JAVA-Linux系统常用诊断工具&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&t=JAVA-Linux系统常用诊断工具"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E4%B8%8B%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7"><span class="toc-number">1.</span> <span class="toc-text">Linux下常用诊断工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#uptime"><span class="toc-number">1.1.</span> <span class="toc-text">uptime</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dmesg-tail"><span class="toc-number">1.2.</span> <span class="toc-text">dmesg | tail</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vmstat-1"><span class="toc-number">1.3.</span> <span class="toc-text">vmstat 1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mpstat-P-ALL-1"><span class="toc-number">1.4.</span> <span class="toc-text">mpstat -P ALL 1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#free-m"><span class="toc-number">1.5.</span> <span class="toc-text">free -m</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sar-n-DEV-1"><span class="toc-number">1.6.</span> <span class="toc-text">sar -n DEV 1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#top"><span class="toc-number">1.7.</span> <span class="toc-text">top</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JDK%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7"><span class="toc-number">2.</span> <span class="toc-text">JDK常用诊断工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">性能分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#cpu%E5%88%86%E6%9E%90"><span class="toc-number">3.1.</span> <span class="toc-text">cpu分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%88%86%E6%9E%90"><span class="toc-number">3.2.</span> <span class="toc-text">内存分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98"><span class="toc-number">3.2.1.</span> <span class="toc-text">堆外内存</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A0%86%E5%85%A7%E5%86%85%E5%AD%98"><span class="toc-number">3.2.2.</span> <span class="toc-text">堆內内存</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#I-O%E5%88%86%E6%9E%90"><span class="toc-number">3.3.</span> <span class="toc-text">I&#x2F;O分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6I-O"><span class="toc-number">3.3.1.</span> <span class="toc-text">文件I&#x2F;O</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7"><span class="toc-number">3.4.</span> <span class="toc-text">其他分析工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#VisualVM"><span class="toc-number">3.4.1.</span> <span class="toc-text">VisualVM</span></a></li></ol></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        JAVA-Linux系统常用诊断工具
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-09-12T11:02:13.000Z" class="dt-published" itemprop="datePublished">2023-09-12</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>当用于运行情况、响应情况异常时，会直接表现为系统的指标异常，而指标需要通过相关的系统指令来获取。</p>
+<h2 id="Linux下常用诊断工具"><a href="#Linux下常用诊断工具" class="headerlink" title="Linux下常用诊断工具"></a>Linux下常用诊断工具</h2><h3 id="uptime"><a href="#uptime" class="headerlink" title="uptime"></a>uptime</h3><p>快速查看服务器的负载情况</p>
+<p>返回系统的平均负荷，包括1min, 5min, 15min内可以运行的任务平均数，包括正在运行的任务以及虽然可以运行但正在等待某个处理器空闲的任务。</p>
+<p>如果1min平均负载很高，而15min的平均负载很低，说明服务器正在面临高负载情况，需要进一步排查CPU资源都消耗在哪里。<br>如果1min平均负载很低，而15min的平均负载很高，则有可能CPU资源紧张时刻已经过去了。</p>
+<h3 id="dmesg-tail"><a href="#dmesg-tail" class="headerlink" title="dmesg | tail"></a>dmesg | tail</h3><p>输出系统日志的最后10行。常见的OOM kill 和 TCP丢包在这里都会有记录</p>
+<h3 id="vmstat-1"><a href="#vmstat-1" class="headerlink" title="vmstat 1"></a>vmstat 1</h3><p>实时性能检测工具，可以展现给定时间间隔服务器的状态值，包括服务器的CPU使用率、内存使用、虚拟机内存交换情况、I&#x2F;O读写情况等系统核心指标。<br>一般主要关注输出的CPU使用情况，其中id + us + sy &#x3D; 100，<br>id : 是空闲CPU使用率<br>us : 是用户CPU使用率<br>sy : 是系统CPU使用率<br>如果用户时间和系统时间相加非常大(us+sy)，说明cpu正忙于执行指令。<br>如果I&#x2F;O等待时间很长，那么系统的瓶颈可能在磁盘I&#x2F;O</p>
+<p><font style="color: red;">在计算cpu使用率的时候，建议多获取几次，尤其是在脚本里获取时。建议在脚本里获取两次以上并排除第一次的数据</font> </p>
+<h3 id="mpstat-P-ALL-1"><a href="#mpstat-P-ALL-1" class="headerlink" title="mpstat -P ALL 1"></a>mpstat -P ALL 1</h3><p>显示每个cpu的使用情况。<br>如果一个cpu占用率特别高，说明可能是一个单线程应用程序引起的</p>
+<h3 id="free-m"><a href="#free-m" class="headerlink" title="free -m"></a>free -m</h3><p>可以查看系统内存的使用情况，-m参数表示按照兆字节展示。<br>如果可用内存非常少，系统可能会动用交换区（swap）,这时会增加I&#x2F;O开销（iostat命令中体现）<br>需要注意的是，返回信息的第一行是针对整个系统来说的，因此Buffer和Cache都被计算在了used里，其实这两部分内存可以被很快拿来供应用程序使用的。<br>真正反映内存使用情况的是第二行。</p>
+<h3 id="sar-n-DEV-1"><a href="#sar-n-DEV-1" class="headerlink" title="sar -n DEV 1"></a>sar -n DEV 1</h3><p>sar命令主要是用来查看网络设备的吞吐率。<br>可以通过 网络设备的吞吐率判断网络设备是否已经饱和</p>
+<h3 id="top"><a href="#top" class="headerlink" title="top"></a>top</h3><p>包含了系统全局的很多指标信息。<br>包括系统负载情况、系统内存使用情况、系统 cpu使用情况等，基本涵盖了上述几条命令的功能。<br>可以相对全面地查看系统负载的来源。<br>top命令支持排序，可以按照不同列排序，方便地找出诸如内存占用最多的进程、cpu占用率最高的进程等。</p>
+<p>注意 top是一个瞬时输出的值，最好通过定时存储其值到文件中来进行比对诊断。</p>
+<h2 id="JDK常用诊断工具"><a href="#JDK常用诊断工具" class="headerlink" title="JDK常用诊断工具"></a>JDK常用诊断工具</h2><p>全在JAVA_HOME&#x2F;bin下</p>
+<h2 id="性能分析"><a href="#性能分析" class="headerlink" title="性能分析"></a>性能分析</h2><p>在系统层面能够影响应用性能的一般包括三个因素：CPU、内存、I&#x2F;O。可以从这三方面进行程序的性能瓶颈分析</p>
+<h3 id="cpu分析"><a href="#cpu分析" class="headerlink" title="cpu分析"></a>cpu分析</h3><p>第一步： 使用top, vmstat, ps等命令查看系统cpu使用率是否有异常，从而判断出是否是cpu繁忙造成的性能问题。<br>主要通过us(用户进程所占的百分比)来看异常的进程信息。当us接近100% 甚至更高时，可以确定是cpu繁忙造成的响应缓慢。<br>一般来说，cpu繁忙的原因主要有：</p>
+<ol>
+<li>线程中有无线空循环、无阻塞、正则匹配或单纯的计算</li>
+<li>发生了频繁GC      – <font style="color: yellowgreen;"> jstat -gcutil [pid]</font> 判断是否是GC造成的cpu繁忙</li>
+<li>多线程的上下文切换 – <font style="color: yellowgreen;"> vmstat 1 5</font> 【看cs次数】,判断是否是上下文切换造成的cpu繁忙<br>确定cpu使用率最高的进程之后可以使用jstack 来打印异常进程的堆栈信息</li>
+</ol>
+<p>第二步： jstack [pid] </p>
+<p>jstack 只能打印进程的信息，包含此进程下所有线程（轻量级进程 LWP）的堆栈信息。<br>如果需要进一步确定是哪一个线程耗费了到了cpu资源，可以使用</p>
+<p><font style="color: yellowgreen;"> top -p [processId] -H </font></p>
+<p>查看 或者 通过</p>
+<p><font style="color: yellowgreen;">ps -Le</font><br>来显示所有进程，包括LWP的资源耗费信息。<br>最后通过jstack的输出文件中查找对应的 LWP的十六进制ID(<font style="color: yellowgreen;">printf %0x [processId]</font>),即可定位到相应的堆栈信息。</p>
+<p>需要注意线程的状态是RUNNABLE,WAITING等。对于RUNNABLE的进程需要注意的是否有耗费cpu资源的计算,对于WAITING的线程一般是所得等待操作。</p>
+<p>jstack查看线程栈时需要注意：JVM只能在Safepoint转储出一个线程的栈<br>jstack dump实现机制每次只能转储出一个线程的栈信息，因此输出信息中可能会看到一些冲突信息，如一个线程正在等待的锁并没有被其他线程持有，多个线程持有同一个锁等。</p>
+<p>有时候可能会由JIT引起一些cpu飚高，如大量方法编译等，可以使用<font style="color: yellowgreen;"> -XX:+PrintCompilation</font>参数输出JIT编译情况，来排查JIT编译引发的cpu问题</p>
+<h3 id="内存分析"><a href="#内存分析" class="headerlink" title="内存分析"></a>内存分析</h3><p>对于Java应用来说，内存主要有堆外内存和堆内内存组成</p>
+<h4 id="堆外内存"><a href="#堆外内存" class="headerlink" title="堆外内存"></a>堆外内存</h4><p>主要是JNI、Deflater&#x2F;Inflater、DirectByteBuffer(NIO中会用到)使用的。<br>对于堆外内存的分析，主要通过 vmstat、sar、top、pidstat等命令查看Swap和物理内存的消耗情况在做判断。<br>对于JNI、Deflater这种调用可以通过Google-preftools来追踪资源使用情况</p>
+<h4 id="堆內内存"><a href="#堆內内存" class="headerlink" title="堆內内存"></a>堆內内存</h4><p>是java应用主要的内存区域。与这部分内存性能相关的主要有</p>
+<ol>
+<li>创建对象：一般存储在堆中，需要控制好对象的 数量和大小，尤其是大对象容易进入老年代</li>
+<li>全局集合：全局集合通常生命周期比较长，因此需要特别注意全局集合的使用</li>
+<li>缓存：缓存选用的数据结构不同，会很大程度上影响内存的大小和GC</li>
+<li>ClassLoader：主要是动态加载类容易造成永久代内存不足</li>
+<li>多线程：线程分配会占用本地内存，过多线程会造成内存不足</li>
+</ol>
+<p>以上使用不当就容易造成<br>频繁GC –&gt; Sope the world,会使应用响应变慢<br>OOM， 直接造成内存溢出错误使程序退出<br>        OOM分为：<br>        Heap space： 堆内存不足<br>        PerGen space： 永久代内存不足<br>        Native thread： 本地线程没有足够内存可分配</p>
+<p>排查堆内存问题常用工具是JDK自带的 jmap</p>
+<p>查看JVM内存使用情况：<br><font style="color: yellowgreen;"> jmp -heap <pid> </font></p>
+<p>查看JVM内存存活的对象<br><font style="color: yellowgreen;"> jmap -histo:live <pid> </font></p>
+<p>把heap里所有对象都dump下来，不论对象是死是活<br><font style="color: yellowgreen;"> jmap -dump:format&#x3D;b,file&#x3D;xxx.hprof <pid> </font></p>
+<p>先做一次Full GC, 在dump,只包含仍然存活的对象信息<br><font style="color: yellowgreen;"> jmap -dump:format&#x3D;b,live,file&#x3D;xxx.hprof <pid> </font></p>
+<p>另外， Eclipse的MAT（Memory Analyzer Tool）可以看到具体的堆栈和内存中对象的信息。<br>JDK自带的jhat 也能够查看dump文件，并启动web端口供浏览器浏览</p>
+<h3 id="I-O分析"><a href="#I-O分析" class="headerlink" title="I&#x2F;O分析"></a>I&#x2F;O分析</h3><p>通常与应用性能相关的I&#x2F;O分析包括文件I&#x2F;O和网络I&#x2F;O</p>
+<h4 id="文件I-O"><a href="#文件I-O" class="headerlink" title="文件I&#x2F;O"></a>文件I&#x2F;O</h4><p>可以使用系统工具 pidstat、 iostat、vmstat 来查看I&#x2F;O情况<br>vmstat 主要看bi和bo，由此可判断I&#x2F;O是否繁忙<br>bi:设备每秒接收的块数量<br>bo: 设备每秒发送的块数量</p>
+<p>可以进一步使用strace工具定位堆文件I&#x2F;O的系统调用。<br>通常造成文件I&#x2F;O性能差的原因：</p>
+<ol>
+<li>大量的随机读&#x2F;写</li>
+<li>文件太大</li>
+<li>网络I&#x2F;O</li>
+</ol>
+<p>查看网络I&#x2F;O<br>一般使用netstat工具。可以查看所有连接的状况、数目、端口信息等。如TIME_WAIT或CLOSE_WAIT连接过多时，会影响应用的响应速度。<br><font style="color: yellowgreen;"> netstat -anp </font></p>
+<p>还可以使用tcpdump来分析网络I&#x2F;O的数据。tcpdump是一堆二进制数据，可以使用Wireshark查看具体的连接以及其中数据的内容<br><font style="color: yellowgreen;"> tcpdump -i eth0 -w tmp.cap -tnn dst post 8080 </font> 监听8080端口的网络请求并打印日志到tmp.cap</p>
+<p>还可以通过&#x2F;proc&#x2F;interrupts来获取当前系统使用的中断情况<br><font style="color: yellowgreen;"> cat &#x2F;proc&#x2F;interrupts </font><br>展示的内容各列依次是：irq的序号，在各自cpu上发生中断的次数，可编程中断控制器，设备名称（request_list的dev_name字段）</p>
+<p>通过查看网卡设备的终端情况可以判断网络I&#x2F;O的情况。</p>
+<h3 id="其他分析工具"><a href="#其他分析工具" class="headerlink" title="其他分析工具"></a>其他分析工具</h3><h4 id="VisualVM"><a href="#VisualVM" class="headerlink" title="VisualVM"></a>VisualVM</h4><p>Java应用检测工具，原理是通过JMX接口来连接JVM进程，从而能够看到JVM上的线程、内存、类等信息。 </p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E4%B8%8B%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7"><span class="toc-number">1.</span> <span class="toc-text">Linux下常用诊断工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#uptime"><span class="toc-number">1.1.</span> <span class="toc-text">uptime</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dmesg-tail"><span class="toc-number">1.2.</span> <span class="toc-text">dmesg | tail</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vmstat-1"><span class="toc-number">1.3.</span> <span class="toc-text">vmstat 1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mpstat-P-ALL-1"><span class="toc-number">1.4.</span> <span class="toc-text">mpstat -P ALL 1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#free-m"><span class="toc-number">1.5.</span> <span class="toc-text">free -m</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sar-n-DEV-1"><span class="toc-number">1.6.</span> <span class="toc-text">sar -n DEV 1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#top"><span class="toc-number">1.7.</span> <span class="toc-text">top</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JDK%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7"><span class="toc-number">2.</span> <span class="toc-text">JDK常用诊断工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">性能分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#cpu%E5%88%86%E6%9E%90"><span class="toc-number">3.1.</span> <span class="toc-text">cpu分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%88%86%E6%9E%90"><span class="toc-number">3.2.</span> <span class="toc-text">内存分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98"><span class="toc-number">3.2.1.</span> <span class="toc-text">堆外内存</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A0%86%E5%85%A7%E5%86%85%E5%AD%98"><span class="toc-number">3.2.2.</span> <span class="toc-text">堆內内存</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#I-O%E5%88%86%E6%9E%90"><span class="toc-number">3.3.</span> <span class="toc-text">I&#x2F;O分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6I-O"><span class="toc-number">3.3.1.</span> <span class="toc-text">文件I&#x2F;O</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7"><span class="toc-number">3.4.</span> <span class="toc-text">其他分析工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#VisualVM"><span class="toc-number">3.4.1.</span> <span class="toc-text">VisualVM</span></a></li></ol></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&text=JAVA-Linux系统常用诊断工具"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&title=JAVA-Linux系统常用诊断工具"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&is_video=false&description=JAVA-Linux系统常用诊断工具"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JAVA-Linux系统常用诊断工具&body=Check out this article: http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&title=JAVA-Linux系统常用诊断工具"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&title=JAVA-Linux系统常用诊断工具"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&title=JAVA-Linux系统常用诊断工具"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&title=JAVA-Linux系统常用诊断工具"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&name=JAVA-Linux系统常用诊断工具&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/09/12/JAVA-Linux%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7/&t=JAVA-Linux系统常用诊断工具"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
